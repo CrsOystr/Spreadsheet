@@ -16,3 +16,6 @@
 \\chips.eng.utah.edu\home\jasteck\.win_my_documents\Visual Studio 2012\Projects\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.csproj.GenerateResource.Cache
 \\chips.eng.utah.edu\home\jasteck\.win_my_documents\Visual Studio 2012\Projects\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.exe
 \\chips.eng.utah.edu\home\jasteck\.win_my_documents\Visual Studio 2012\Projects\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.pdb
+X:\Spreadsheet\PS6\SpreadsheetGUI\bin\Debug\SpreadsheetGUI.exe.config
+X:\Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.exe
+X:\Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.pdb
