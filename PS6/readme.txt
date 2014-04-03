@@ -1,2 +1,1 @@
-The Coded UI testing itself has been having a lot of problems (like failing to register certain keystrokes thus failing the test even without any assertions).
-I talked to the TA Matthew and he said not to worry about it.
+This is the basic GUI Spreadsheet.
