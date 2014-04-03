@@ -1,0 +1,14 @@
+﻿<spreadsheet version="ps6">
+  <cell>
+    <name>A1</name>
+    <contents>10</contents>
+  </cell>
+  <cell>
+    <name>A2</name>
+    <contents>=A3-5</contents>
+  </cell>
+  <cell>
+    <name>A3</name>
+    <contents>=A1+1</contents>
+  </cell>
+</spreadsheet>
