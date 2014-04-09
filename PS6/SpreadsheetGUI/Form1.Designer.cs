@@ -45,6 +45,10 @@
             this.contentTextBox = new System.Windows.Forms.TextBox();
             this.labelSeparator1 = new System.Windows.Forms.Label();
             this.CellName = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
             this.menuStrip.SuspendLayout();
             this.controlPanel.SuspendLayout();
             this.selectedCellInfoPanel.SuspendLayout();
@@ -66,7 +70,7 @@
             this.helpToolStripMenuItem1});
             this.menuStrip.Location = new System.Drawing.Point(0, 5);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(181, 24);
+            this.menuStrip.Size = new System.Drawing.Size(89, 24);
             this.menuStrip.TabIndex = 3;
             this.menuStrip.Text = "menuStrip2";
             // 
@@ -145,6 +149,10 @@
             // selectedCellInfoPanel
             // 
             this.selectedCellInfoPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.selectedCellInfoPanel.Controls.Add(this.textBox2);
+            this.selectedCellInfoPanel.Controls.Add(this.label2);
+            this.selectedCellInfoPanel.Controls.Add(this.textBox1);
+            this.selectedCellInfoPanel.Controls.Add(this.label1);
             this.selectedCellInfoPanel.Controls.Add(this.valueLabel);
             this.selectedCellInfoPanel.Controls.Add(this.labelSeparator2);
             this.selectedCellInfoPanel.Controls.Add(this.contentTextBox);
@@ -209,6 +217,38 @@
             this.CellName.TabIndex = 0;
             this.CellName.Text = "A1";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(267, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(51, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Server IP";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(324, 7);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.TabIndex = 6;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(430, 10);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(87, 13);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Server Password";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(523, 6);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(100, 20);
+            this.textBox2.TabIndex = 8;
+            // 
             // SpreadsheetGUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -250,6 +290,10 @@
         private System.Windows.Forms.Label CellName;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openInNewWindowToolStripMenuItem;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
 
