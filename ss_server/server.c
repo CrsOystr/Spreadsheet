@@ -1,3 +1,6 @@
+// Server.c -- Spring 2014. Written for CS 3505 at the University of Utah
+// Intended to be used as a server for a spreadsheet program with multiple clients
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -52,6 +55,8 @@ void * thread_handle_clients(void *arg)
   return NULL;
 }
 
+
+//Entry point for program
 int main(int argc, char *argv[])
 {
   if(argc < 2)

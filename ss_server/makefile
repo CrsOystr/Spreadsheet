@@ -1,2 +1,2 @@
-all: server
-	gcc server.c -o server
+all:
+	gcc server.c -pthread -o server
