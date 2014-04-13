@@ -41,6 +41,7 @@
             this.IP_textbox.Name = "IP_textbox";
             this.IP_textbox.Size = new System.Drawing.Size(100, 20);
             this.IP_textbox.TabIndex = 0;
+            this.IP_textbox.Text = "155.98.111.64";
             // 
             // label1
             // 
@@ -75,6 +76,7 @@
             this.PW_textbox.Name = "PW_textbox";
             this.PW_textbox.Size = new System.Drawing.Size(100, 20);
             this.PW_textbox.TabIndex = 4;
+            this.PW_textbox.Text = "james";
             // 
             // Login
             // 
