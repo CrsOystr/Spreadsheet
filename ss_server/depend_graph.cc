@@ -1,4 +1,6 @@
 // Dependency  graph for spreadsheet server
+// THE DEPENDENT DEPENDS ON THE DEPENDEE
+//Parent first,child second order
 
 #include <iostream>
 #include <list>
@@ -9,6 +11,7 @@
 
 namespace depend
 {
+ 
   depend_graph::depend_graph()
   {
     std::cout << "initializing" << std::endl;
@@ -16,16 +19,64 @@ namespace depend
   
   int depend_graph::size()
   {
-    return dependencies.size();
+    return depend_list.size();
+  }
+
+  bool depend_graph::has_dependents(string cell)
+  {
+    bool is_dependee = false;
+    listPair::iterator iter = depend_list.begin();
+    
+    for(;iter != depend_list.end(); iter++)
+      {
+	if ((*iter).first == cell)
+	  is_dependee = true;
+      }
+    return is_dependee;
+  }
+
+  bool depend_graph::has_dependees(string cell)
+  {
+    bool is_dependent = false;
+    listPair::iterator iter = depend_list.begin();
+    
+    for(;iter != depend_list.end(); iter++)
+      {
+	if ((*iter).second == cell)
+	  is_dependent = true;
+      }
+    return is_dependent;
+  }
+
+  list<string> depend_graph::get_dependents(string cell)
+  {
+    list<string> dependent_list;
+    listPair::iterator iter = depend_list.begin();
+    
+    for(;iter != depend_list.end(); iter++)
+      {
+	if ((*iter).first == cell)
+	  {
+	    dependent_list.push_back((*iter).second);
+	  }
+      }
+    return dependent_list;
   }
   
   void depend_graph::add_dependency(string dependee, string dependent)
   {
     bool is_dup = false;
-    for (int i = 0; i < dependencies.size(); i++)
+    pair<string, string> depend_pair (dependee, dependent);
+    
+    listPair::iterator iter = depend_list.begin();
+    
+    for(;iter != depend_list.end(); iter++)
       {
+	if ((*iter).first == dependee && (*iter).second == dependent)
+	  is_dup = true;
       }
-    dependencies.push_back(make_pair(dependee, dependent));
+    if (!is_dup)
+      depend_list.push_back(depend_pair);
   }
   
 }

@@ -9,10 +9,12 @@ using namespace std;
 
 namespace depend
 {
+  typedef list< pair<string,string> > listPair;
+  
   class depend_graph
   {
   private:
-    list<pair<string,string> > dependencies;
+    list<pair<string,string> > depend_list;
     int dependee_size(string cell);
 
   public:
@@ -23,7 +25,7 @@ namespace depend
 
     list<string> get_dependents(string cell);
     list<string> get_dependees(string cell);
-    
+
     void add_dependency(string dependee, string dependent);
     void remove_dependency(string dependee, string dependent);
 
