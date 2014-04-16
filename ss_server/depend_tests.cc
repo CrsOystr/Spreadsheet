@@ -62,8 +62,24 @@ int main()
       {
 	cout << "Test 4 dependents " << (*iter) << endl; 
       }
-  }
-  
+ }
+
+//TEST NUMBER 5
+ {
+    depend_graph test5;
+    string t1 = "a";
+    string t2 = "b";
+    test5.add_dependency(t1,t2);
+    test5.add_dependency(t2,t1);
+
+    test5.remove_dependency(t1,t2);
+
+    if (test5.has_dependents(t2) == true && test5.has_dependents(t1) == false)
+      {
+	cout << "Test Five Passed" << endl;
+      }
+
+ }
 
 
 }

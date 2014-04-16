@@ -62,6 +62,21 @@ namespace depend
       }
     return dependent_list;
   }
+
+  list<string> depend_graph::get_dependees(string cell)
+  {
+    list<string> dependee_list;
+    listPair::iterator iter = depend_list.begin();
+    
+    for(;iter != depend_list.end(); iter++)
+      {
+	if ((*iter).second == cell)
+	  {
+	    dependee_list.push_back((*iter).first);
+	  }
+      }
+    return dependee_list;
+  }
   
   void depend_graph::add_dependency(string dependee, string dependent)
   {
@@ -78,6 +93,25 @@ namespace depend
     if (!is_dup)
       depend_list.push_back(depend_pair);
   }
+
+  void depend_graph::remove_dependency(string dependee, string dependent)
+  {
+    listPair::iterator iter = depend_list.begin();
+    while(iter != depend_list.end())
+      {
+	if ((*iter).first == dependee && (*iter).second == dependent)
+	  {
+	    depend_list.erase(iter++);
+	  }
+	else
+	  {
+	    ++iter;
+	  }
+      }
+  }
+
+  void replace_dependents
+
   
 }
 
