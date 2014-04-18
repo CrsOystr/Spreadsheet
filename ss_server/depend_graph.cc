@@ -22,6 +22,28 @@ namespace depend
     return depend_list.size();
   }
 
+
+  bool depend_graph::circular_check(string start, string name, list<string> visited)
+  {
+    bool is_circ = false;
+    visited.push_back(name);
+    list<string> direct_dependents = this->get_dependents(name);
+    list<string>::iterator iter = direct_dependents.begin();
+    
+    for(;iter != direct_dependents.end(); iter++)
+      {
+	if ((*iter) == start)
+	  is_circ = true;
+	else if(!is_circ)
+	  is_circ = this->circular_check(start, (*iter), visited);
+      }
+    if (is_circ)
+      return true;
+    else
+      return false;
+  }
+
+
   //returns true boolean if the cell is a dependee
   bool depend_graph::has_dependents(string cell)
   {

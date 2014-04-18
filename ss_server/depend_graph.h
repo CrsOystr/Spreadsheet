@@ -20,6 +20,8 @@ namespace depend
   public:
     depend_graph();
     int size();
+    bool circular_check(string start, string name, list<string> visited);
+
     bool has_dependents(string cell);
     bool has_dependees(string cell);
 

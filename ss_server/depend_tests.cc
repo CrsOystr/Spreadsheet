@@ -1,7 +1,7 @@
 //Tests for dependancy graph
 
 #include <iostream>
-//include <boost/regex.hpp>
+#include <boost/regex.hpp>
 #include <string>
 #include "depend_graph.h"
 
@@ -12,30 +12,23 @@ int main()
 {
   cout << "Testing program for Dependency Graph" << endl;
   
-
-/*
+  
+  
   //BOOST TEST
   {
-    string test_string("1 + 4 + A54");
-    const char* pattern = "[a-zA-Z_](?: [a-zA-Z_]|\d)*";
-
+    string test_string("1 + 4 + A4 + B5 + B6 + b89 + G47 + L986");
+    const char* pattern = "[a-zA-Z_][0-9][0-9]?";
+    
     boost::regex variable_regex(pattern);
-
+    
     boost::sregex_iterator iter(test_string.begin(), test_string.end(), variable_regex);
     boost::sregex_iterator end;
     for (; iter != end; ++iter)
       {
-	cout << it->str() << "\n";
+	cout << iter->str() << "\n";
       }
   }
-  */
-
-
-
-
-
-
-
+  
 
   {
     depend_graph test1;
@@ -156,7 +149,25 @@ int main()
       {
 	cout << "Test 7 dependees: " << (*iter) << endl; 
       }
+ }
+
+ //CIRCULAR CHECK TEST
+ {
+    depend_graph test8;
+    string t1 = "a";
+    string t2 = "b";
+    string t3 = "c";
+    list<string> t_list;
+    test8.add_dependency(t2,t3);
+    test8.add_dependency(t1,t2);
+    test8.add_dependency(t2,t1);
+
+
+    if(test8.circular_check(t2,t2, t_list))
+       cout << "TEST PASSED" << endl;
+    
 
  }
 
+ 
 }
