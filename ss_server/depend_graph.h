@@ -29,8 +29,8 @@ namespace depend
     void add_dependency(string dependee, string dependent);
     void remove_dependency(string dependee, string dependent);
 
-    void replace_dependents(string cell, list<string>);
-    void replace_dependees(string cell, list<string>);
+    void replace_dependents(string cell, list<string> dependents);
+    void replace_dependees(string cell, list<string> dependess);
   };
 
 }
