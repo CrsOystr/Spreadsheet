@@ -85,6 +85,10 @@
       <Project>{78389195-9606-47b5-8506-f14a87c2d2cb}</Project>
       <Name>SpreadsheetGUI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj">
+      <Project>{56eb475d-a2de-41a1-8206-095089aa8b1b}</Project>
+      <Name>Spreadsheet</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -33,15 +33,19 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.PW_textbox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.StatusLabel = new System.Windows.Forms.Label();
+            this.ServerButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // IP_textbox
             // 
-            this.IP_textbox.Location = new System.Drawing.Point(122, 32);
+            this.IP_textbox.Location = new System.Drawing.Point(105, 32);
             this.IP_textbox.Name = "IP_textbox";
-            this.IP_textbox.Size = new System.Drawing.Size(100, 20);
+            this.IP_textbox.Size = new System.Drawing.Size(135, 20);
             this.IP_textbox.TabIndex = 0;
-            this.IP_textbox.Text = "155.98.111.64";
+            this.IP_textbox.Text = "lab2-10.eng.utah.edu";
+            this.IP_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.waitForEnter);
             // 
             // label1
             // 
@@ -55,7 +59,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 35);
+            this.label2.Location = new System.Drawing.Point(41, 35);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(58, 13);
             this.label2.TabIndex = 2;
@@ -72,17 +76,49 @@
             // 
             // PW_textbox
             // 
-            this.PW_textbox.Location = new System.Drawing.Point(122, 59);
+            this.PW_textbox.Location = new System.Drawing.Point(105, 59);
             this.PW_textbox.Name = "PW_textbox";
-            this.PW_textbox.Size = new System.Drawing.Size(100, 20);
+            this.PW_textbox.Size = new System.Drawing.Size(135, 20);
             this.PW_textbox.TabIndex = 4;
             this.PW_textbox.Text = "james";
+            this.PW_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.waitForEnter);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(56, 119);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(40, 13);
+            this.label4.TabIndex = 5;
+            this.label4.Text = "Status:";
+            // 
+            // StatusLabel
+            // 
+            this.StatusLabel.AutoSize = true;
+            this.StatusLabel.Location = new System.Drawing.Point(102, 119);
+            this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Size = new System.Drawing.Size(79, 13);
+            this.StatusLabel.TabIndex = 6;
+            this.StatusLabel.Text = "Not Connected";
+            // 
+            // ServerButton
+            // 
+            this.ServerButton.Location = new System.Drawing.Point(105, 86);
+            this.ServerButton.Name = "ServerButton";
+            this.ServerButton.Size = new System.Drawing.Size(135, 23);
+            this.ServerButton.TabIndex = 7;
+            this.ServerButton.Text = "Connect";
+            this.ServerButton.UseVisualStyleBackColor = true;
+            this.ServerButton.Click += new System.EventHandler(this.ServerButton_Click);
             // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(258, 103);
+            this.ClientSize = new System.Drawing.Size(265, 162);
+            this.Controls.Add(this.ServerButton);
+            this.Controls.Add(this.StatusLabel);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.PW_textbox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -90,6 +126,7 @@
             this.Controls.Add(this.IP_textbox);
             this.Name = "Login";
             this.Text = "Login to server";
+            this.Load += new System.EventHandler(this.Login_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -102,6 +139,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox PW_textbox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label StatusLabel;
+        private System.Windows.Forms.Button ServerButton;
     }
 }
 

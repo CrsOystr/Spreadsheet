@@ -69,7 +69,7 @@ namespace SpreadsheetGUI
         [STAThread]
        static void Main()
         {
-           
+            Launch(null, null);
         }
 
         static void Launch(object sender, EventArgs e)

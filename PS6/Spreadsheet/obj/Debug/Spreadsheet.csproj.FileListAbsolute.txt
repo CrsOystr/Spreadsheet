@@ -18,3 +18,13 @@ X:\Spread\PS6\Spreadsheet\bin\Debug\Formula.xml
 X:\Spread\PS6\Spreadsheet\obj\Debug\Spreadsheet.csprojResolveAssemblyReference.cache
 X:\Spread\PS6\Spreadsheet\obj\Debug\Spreadsheet.dll
 X:\Spread\PS6\Spreadsheet\obj\Debug\Spreadsheet.pdb
+C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\Debug\Spreadsheet.XML
+C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\Debug\Spreadsheet.dll
+C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\Debug\Spreadsheet.pdb
+C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\Debug\DependencyGraph.dll
+C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\Debug\Formula.dll
+C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\Debug\DependencyGraph.xml
+C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\Debug\Formula.xml
+C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\Debug\Spreadsheet.csprojResolveAssemblyReference.cache
+C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\Debug\Spreadsheet.dll
+C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\Debug\Spreadsheet.pdb

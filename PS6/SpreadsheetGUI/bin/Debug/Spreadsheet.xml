@@ -290,6 +290,47 @@
             Version information
             </summary>
         </member>
+        <member name="T:SS.ConnectionLiaison">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:SS.ConnectionLiaison.server">
+            <summary>
+            Address of the server to connect to
+            </summary>
+        </member>
+        <member name="F:SS.ConnectionLiaison.onDisconnect">
+            <summary>
+            Gets called when there was a connection but lost it.
+            </summary>
+        </member>
+        <member name="M:SS.ConnectionLiaison.#ctor(System.String,System.Action{System.String})">
+            <summary>
+            Sets up a ConnectionLiaison. Does not automatically connect upon initialization.
+            </summary>
+            <param name="server">Address of the server this connection will be associated with.</param>
+            <param name="onDisconnect">This will be called when there was a connection but we lost it.</param>
+        </member>
+        <member name="M:SS.ConnectionLiaison.tryToConnect(System.Action{System.String},System.Action{System.String})">
+            <summary>
+            
+            </summary>
+            <param name="successfulConnect">Called if we successfully connect to the server</param>
+            <param name="failedToConnect">Called if unable to connect to server at all.</param>
+        </member>
+        <member name="M:SS.ConnectionLiaison.echo(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="P:SS.ConnectionLiaison.Connected">
+            <summary>
+            Describes if this has a connection to a server.
+            </summary>
+        </member>
         <member name="T:SS.Spreadsheet">
             <summary>
             Realizes AbstractSpreadsheet
