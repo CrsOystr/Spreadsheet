@@ -1,5 +1,7 @@
 ﻿using CustomNetworking;
 using SS;
+using SpreadsheetGUI;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +22,8 @@ namespace ServerConnGUI
         public enum state { notLoggedIn, connecting, connected, lostConnection };
         private state _lState = state.notLoggedIn;
 
+        int smallFormHeight = 180;
+        int largeFormHeight;
 
         /*variables to be used
         private bool authenticated = false;
@@ -32,7 +36,7 @@ namespace ServerConnGUI
         private ConnectionLiaison heldConnection;
       
         /// <summary>
-        /// Login GUI start point
+        /// Runs when the form is first created.
         /// </summary>
         public Login()
         {
@@ -48,6 +52,8 @@ namespace ServerConnGUI
         {
             SetConnectionState(state.notLoggedIn);
             heldConnection = null;
+            largeFormHeight = this.Height;
+            this.Height = smallFormHeight;
         }
 
 
@@ -144,15 +150,20 @@ namespace ServerConnGUI
             {
                 if (s == state.connecting)
                 {
-                    StatusLabel.Text = "Attempting to connect to server...";
-
+                    ssListBox.Enabled = false;
                     ServerButton.Enabled = true;
+
+                    StatusLabel.Text = "Attempting to connect to server...";
                     ServerButton.Text = "Press to abort";
                 }
                 else if (s == state.connected)
                 {
                     StatusLabel.Text = "Connected";
-                    ServerButton.Text = "Refresh Connection";
+                    ServerButton.Text = "Refresh";
+
+                    ssListBox.Enabled = true;
+                    this.Height = largeFormHeight;
+
                 }
                 else if (s == state.lostConnection || s == state.notLoggedIn)
                 {
@@ -212,6 +223,16 @@ namespace ServerConnGUI
                 e.SuppressKeyPress = true;
 
             }
+        }
+
+        private void ssListBox_DoubleClick(object sender, EventArgs e)
+        {
+            var list = (ListBox)sender;
+
+            // This is your selected item
+            string item = list.SelectedItem.ToString();
+
+            new SpreadsheetGUIForm(heldConnection, item).Show();
         }
 
 

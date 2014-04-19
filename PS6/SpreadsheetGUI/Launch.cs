@@ -69,9 +69,11 @@ namespace SpreadsheetGUI
         [STAThread]
        static void Main()
         {
-            Launch(null, null);
+            //Launch(null, null);
+            
         }
 
+        /* Disabled for SS Collaboration 
         static void Launch(object sender, EventArgs e)
         {
             Application.EnableVisualStyles();
@@ -80,5 +82,6 @@ namespace SpreadsheetGUI
             appContext.RunForm(new SpreadsheetGUIForm());
             Application.Run(appContext);
         }
+        //*/
     }
 }

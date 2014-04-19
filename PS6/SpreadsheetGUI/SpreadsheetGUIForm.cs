@@ -94,11 +94,12 @@ namespace SpreadsheetGUI
         /// <summary>
         /// Creates an empty new Spreadsheet Form
         /// </summary>
-        public SpreadsheetGUIForm()
+        public SpreadsheetGUIForm(ConnectionLiaison Connection, string SpreadsheetName)
         {
             initialize();
         }
 
+        /* Disabled for CollaborativeSpreadsheet
         /// <summary>
         /// Brings up the open file dialog if loadFile is true.
         /// If they cancel the load or the file fails to load then
@@ -114,6 +115,7 @@ namespace SpreadsheetGUI
                 if (!openDialogAction()) //show the open form dialog
                     Close(); //if it doesn't load for some reason, then close this form.
         }
+         * //*/
 
         /// <summary>
         /// initializes all components on creation.
@@ -127,6 +129,21 @@ namespace SpreadsheetGUI
 
             //finish initializing everything and clear them
             clearAll();
+        }
+
+
+        //Stuff to do after form loads
+        private void SpreadsheetGUIForm_Load(object sender, EventArgs e)
+        {
+            //Display the loading box
+            new LoadingBox().ShowDialog();
+
+
+
+
+
+            //put focus on content textbox
+            this.ActiveControl = this.contentTextBox;
         }
 
         /// <summary>
@@ -272,7 +289,8 @@ namespace SpreadsheetGUI
         {
             // Tell the application context to run the form on the same
             // thread as the other forms.
-            SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUIForm());
+            /* Disabled for SS Collaboration Project */
+            //SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUIForm());
         }
 
 
@@ -429,12 +447,6 @@ namespace SpreadsheetGUI
             contentIsFocused = true;
         }
 
-        //Stuff to do after form loads
-        private void SpreadsheetGUIForm_Load(object sender, EventArgs e)
-        {
-            //put focus on content textbox
-            this.ActiveControl = this.contentTextBox;
-        }
 
         /// <summary>
         /// Returns the proper value to display rather
@@ -625,7 +637,8 @@ namespace SpreadsheetGUI
         //Creates a new spreadsheet and tells it to immediately open a new dialog
         private void openInNewWindowToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUIForm(true));
+            /*  Disabled for SS Colaboration Project 
+            SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUIForm(true));//*/
         }
     }
 }

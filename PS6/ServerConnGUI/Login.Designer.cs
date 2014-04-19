@@ -36,6 +36,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.ServerButton = new System.Windows.Forms.Button();
+            this.ssListBox = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // IP_textbox
@@ -86,7 +87,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(56, 119);
+            this.label4.Location = new System.Drawing.Point(59, 115);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(40, 13);
             this.label4.TabIndex = 5;
@@ -95,7 +96,7 @@
             // StatusLabel
             // 
             this.StatusLabel.AutoSize = true;
-            this.StatusLabel.Location = new System.Drawing.Point(102, 119);
+            this.StatusLabel.Location = new System.Drawing.Point(105, 115);
             this.StatusLabel.Name = "StatusLabel";
             this.StatusLabel.Size = new System.Drawing.Size(79, 13);
             this.StatusLabel.TabIndex = 6;
@@ -111,11 +112,26 @@
             this.ServerButton.UseVisualStyleBackColor = true;
             this.ServerButton.Click += new System.EventHandler(this.ServerButton_Click);
             // 
+            // ssListBox
+            // 
+            this.ssListBox.FormattingEnabled = true;
+            this.ssListBox.Items.AddRange(new object[] {
+            "One",
+            "Two",
+            "",
+            "Four"});
+            this.ssListBox.Location = new System.Drawing.Point(12, 151);
+            this.ssListBox.Name = "ssListBox";
+            this.ssListBox.Size = new System.Drawing.Size(245, 212);
+            this.ssListBox.TabIndex = 8;
+            this.ssListBox.DoubleClick += new System.EventHandler(this.ssListBox_DoubleClick);
+            // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(265, 162);
+            this.ClientSize = new System.Drawing.Size(274, 412);
+            this.Controls.Add(this.ssListBox);
             this.Controls.Add(this.ServerButton);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.label4);
@@ -124,6 +140,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.IP_textbox);
+            this.MaximizeBox = false;
             this.Name = "Login";
             this.Text = "Login to server";
             this.Load += new System.EventHandler(this.Login_Load);
@@ -142,6 +159,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label StatusLabel;
         private System.Windows.Forms.Button ServerButton;
+        private System.Windows.Forms.ListBox ssListBox;
     }
 }
 

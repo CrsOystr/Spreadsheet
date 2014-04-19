@@ -88,3 +88,4 @@ C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\Spre
 C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.csproj.GenerateResource.Cache
 C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.exe
 C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.pdb
+C:\Users\u0646190\Documents\GitHub\Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.LoadingBox.resources
