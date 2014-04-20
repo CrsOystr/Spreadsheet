@@ -387,15 +387,15 @@
             Makes sure the connection to the player is closed.
             </summary>
         </member>
+        <member name="F:SS.ConnectionLiaison.DEFAULT_ESC">
+            <summary>
+            The default value for the escape sequence
+            </summary>
+        </member>
         <member name="F:SS.ConnectionLiaison.ESC">
             <summary>
             Represents the delimiter used for parsing communications between the Spreadsheet 
-            client and server.
-            </summary>
-        </member>
-        <member name="F:SS.ConnectionLiaison.hostname">
-            <summary>
-            Address of the server to connect to
+            client and server. This value can adapt if the server is using a different separation character (singular)
             </summary>
         </member>
         <member name="M:SS.ConnectionLiaison.#ctor(System.Action{SS.SocketConnection,System.Exception},System.Action{SS.MessageReceivedFrom})">
@@ -411,6 +411,11 @@
             </summary>
             <param name="successfulConnect">Called if we successfully connect to the server</param>
             <param name="failedToConnect">Called if unable to connect to server at all.</param>
+        </member>
+        <member name="P:SS.ConnectionLiaison.hostname">
+            <summary>
+            Address of the server to connect to
+            </summary>
         </member>
         <member name="T:SS.MessageReceivedFrom">
             <summary>
