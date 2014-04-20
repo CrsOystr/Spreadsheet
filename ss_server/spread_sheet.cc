@@ -12,6 +12,18 @@ namespace ss
   spread_sheet::spread_sheet(string name)
   {
     this->ss_name = name;
+    this->ss_version = 0;
+  }
+
+  void spread_sheet::undo()
+  {
+    bool found_change = false;
+    listPair::iterator iter = ss_changes.end();
+    for(; iter != ss_changes.begin(); iter--)
+      {
+      }
+    
+    this->ss_version++;
   }
   
   bool spread_sheet::change(string cell, string cell_content)
@@ -43,6 +55,7 @@ namespace ss
     if (valid_change)
       {
 	this->ss_changes.push_back(pair<string,string>(cell, cell_content));
+	this->ss_version++;
       }
 
     return valid_change;

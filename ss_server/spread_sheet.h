@@ -11,6 +11,7 @@ using namespace depend;
 
 namespace ss
 {
+  typedef list< pair<string,string> > listPair;
   
   class spread_sheet
   {
@@ -18,6 +19,7 @@ namespace ss
     int ss_version;
     depend_graph ss_dg;
     list<pair<string, string> > ss_changes;
+    // map<string,string> ss_map;
     
     
 
