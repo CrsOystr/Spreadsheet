@@ -345,6 +345,7 @@
         <member name="M:SS.SocketConnection.TCPConnect(System.String,System.Int32,System.Int32,System.Action,System.Action{System.String})">
             <summary>
             Tries to connect to the given server with a limit on how long it will try. If successful, it will immediately start listening for packets.
+            For the most part, this method is non stopping.
             </summary>
             <param name="host">Name of the host to connect to</param>
             <param name="port">Port number to connect to</param>
@@ -386,14 +387,15 @@
             Makes sure the connection to the player is closed.
             </summary>
         </member>
+        <member name="F:SS.ConnectionLiaison.ESC">
+            <summary>
+            Represents the delimiter used for parsing communications between the Spreadsheet 
+            client and server.
+            </summary>
+        </member>
         <member name="F:SS.ConnectionLiaison.hostname">
             <summary>
             Address of the server to connect to
-            </summary>
-        </member>
-        <member name="F:SS.ConnectionLiaison.onDisconnect">
-            <summary>
-            Gets called when there was a connection but lost it.
             </summary>
         </member>
         <member name="M:SS.ConnectionLiaison.#ctor(System.Action{SS.SocketConnection,System.Exception},System.Action{SS.MessageReceivedFrom})">
@@ -403,9 +405,9 @@
             <param name="whenDisconnected"></param>
             <param name="whenMessageIsReceived"></param>
         </member>
-        <member name="M:SS.ConnectionLiaison.tryToConnect(System.String,System.String,System.Action,System.Action{System.String})">
+        <member name="M:SS.ConnectionLiaison.tryToConnect(System.String,System.Action,System.Action{System.String})">
             <summary>
-            
+            Attempts to connect to the specified server
             </summary>
             <param name="successfulConnect">Called if we successfully connect to the server</param>
             <param name="failedToConnect">Called if unable to connect to server at all.</param>

@@ -18,18 +18,24 @@ namespace ServerConnGUI
 {
     public partial class Login : Form
     {
-
+        /// <summary>
+        /// Describes the state of the connection with the server.
+        /// *Note: notLoggedIn and lostConnection are similar, if not the same thing.
+        /// </summary>
         public enum state { notLoggedIn, connecting, connected, lostConnection };
         private state _lState = state.notLoggedIn;
 
         int smallFormHeight = 180;
         int largeFormHeight;
 
-
-        private ConnectionLiaison heldConnection;
+        /// <summary>
+        /// Determines the current connection the Login window has. When a new spreadsheet is opened up this connection is passed to the 
+        /// spreadsheet GUI and a new connection is made.
+        /// </summary>
+        private ConnectionLiaison connection;
       
         /// <summary>
-        /// Runs when the form is first created.
+        /// Runs when the form is first created. Try putting stuff in Login_Load first before putting it here.
         /// </summary>
         public Login()
         {
@@ -44,7 +50,7 @@ namespace ServerConnGUI
         private void Login_Load(object sender, EventArgs e)
         {
             SetConnectionState(state.notLoggedIn);
-            heldConnection = null;
+            connection = null;
             largeFormHeight = this.Height;
             this.Height = smallFormHeight;
         }
@@ -58,18 +64,17 @@ namespace ServerConnGUI
         private void EstablishConnection(string hostname, int port, Action onConnect, Action<string> onFail)
         {
             //Check if we have a current connection, if we do then disconnect the previous one and make the new connection
-            if (heldConnection != null && heldConnection.isConnected())
+            if (connection != null && connection.isConnected())
             {
-                    //If we are currently connected then disconnect 
-                    //TODO heldConnection.disconnect();
+                //Disconnect
+                connection.CloseSocketConnection();
             }
-
 
             //Update GUI status
             SetConnectionState(state.connecting);
 
-            heldConnection = new ConnectionLiaison(null, ReceivedSomething);
-            heldConnection.tryToConnect(hostname, PW_textbox.Text, onConnect, onFail);
+            connection = new ConnectionLiaison(null, ReceivedSomething);
+            connection.tryToConnect(hostname, onConnect, onFail);
         }
 
 
@@ -85,11 +90,8 @@ namespace ServerConnGUI
 
         public void connected()
         {
-            //Now talk
-            heldConnection.SendMessage("talk back to meh", null);
-
             //Send password
-            heldConnection.sendPassword(PW_textbox.Text);
+            connection.sendPassword(PW_textbox.Text);
 
             //Get spreadsheets from server
             //TODO
@@ -99,6 +101,7 @@ namespace ServerConnGUI
             SetConnectionState(state.connected);
         }
 
+
         public void FailedConnection(string s)
         {
             SetConnectionState(state.lostConnection);
@@ -107,6 +110,16 @@ namespace ServerConnGUI
             MessageBox.Show("Error: " + s);
         }
 
+        /// <summary>
+        /// Called when a live connection is lost
+        /// </summary>
+        /// <param name="sc"></param>
+        /// <param name="e"></param>
+        public void Disconnected(SocketConnection sc, Exception e)
+        {
+            SetConnectionState(state.lostConnection);
+            MessageBox.Show("Lost connection");
+        }
 
         /// <summary>
         /// Method called when the server sends us something
@@ -114,7 +127,28 @@ namespace ServerConnGUI
         /// <param name="messenger"></param>
         public void ReceivedSomething(MessageReceivedFrom messenger)
         {
-            MessageBox.Show("Server says: " + messenger.message);
+            //Split the message via the special delimiter
+            string[] split = messenger.message.Split(ConnectionLiaison.ESC);
+
+            //Decide what to do with the message received
+            if (split[0] == "FILELIST")
+            {
+                SafeGuiChange(() =>
+                    {
+                        ssListBox.Items.Clear();
+                        for (int i = 1; i < split.Length; i++)
+                            ssListBox.Items.Add(split[i]);
+                    });
+            }
+            else if (split[0] == "INVALID")
+            {
+                MessageBox.Show("Invalid password");
+                SetConnectionState(state.notLoggedIn);
+                return;
+            }
+            else
+                MessageBox.Show("Unknown Message from server: \n" + messenger.message);
+
         }
 
 
@@ -129,13 +163,13 @@ namespace ServerConnGUI
                     ssListBox.Enabled = false;
                     ServerButton.Enabled = true;
 
+                    ServerButton.Text = "Please wait";
                     StatusLabel.Text = "Attempting to connect to server...";
-                    ServerButton.Text = "Press to abort";
                 }
                 else if (s == state.connected)
                 {
-                    StatusLabel.Text = "Connected";
                     ServerButton.Text = "Refresh";
+                    StatusLabel.Text = "Connected";
 
                     ssListBox.Enabled = true;
                     this.Height = largeFormHeight;
@@ -143,6 +177,7 @@ namespace ServerConnGUI
                 }
                 else if (s == state.lostConnection || s == state.notLoggedIn)
                 {
+                    //this.Height = smallFormHeight;
                     StatusLabel.Text = "Not connected";
                     ServerButton.Enabled = true;
                     ServerButton.Text = "Connect";
@@ -208,7 +243,9 @@ namespace ServerConnGUI
             // Grab the selected item
             string item = list.SelectedItem.ToString();
 
-            new SpreadsheetGUIForm(heldConnection, item).Show();
+            //Do not show the GUI form! It will come out when it's ready.
+            new SpreadsheetGUIForm(connection, item).loadSpreadsheet();
+            //Reconnect to the server
             ServerButton_Click(null, null);
         }
 

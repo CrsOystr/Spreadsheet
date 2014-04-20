@@ -116,10 +116,7 @@
             // 
             this.ssListBox.FormattingEnabled = true;
             this.ssListBox.Items.AddRange(new object[] {
-            "One",
-            "Two",
-            "",
-            "Four"});
+            " "});
             this.ssListBox.Location = new System.Drawing.Point(12, 151);
             this.ssListBox.Name = "ssListBox";
             this.ssListBox.Size = new System.Drawing.Size(245, 212);
@@ -130,7 +127,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(274, 412);
+            this.ClientSize = new System.Drawing.Size(274, 419);
             this.Controls.Add(this.ssListBox);
             this.Controls.Add(this.ServerButton);
             this.Controls.Add(this.StatusLabel);

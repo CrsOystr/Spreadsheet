@@ -11,12 +11,18 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace SpreadsheetGUI
 {
 
     public partial class SpreadsheetGUIForm : Form
     {
+
+        ConnectionLiaison connection;
+        LoadingBox loadingBox;
+        string SpreadsheetName;
+
 
         #region Initializing stuff
 
@@ -97,6 +103,18 @@ namespace SpreadsheetGUI
         public SpreadsheetGUIForm(ConnectionLiaison Connection, string SpreadsheetName)
         {
             initialize();
+            this.SpreadsheetName = SpreadsheetName;
+
+            //Take over the connection
+            lock (Connection.GagLock)
+            {
+                this.connection = Connection;
+                this.connection.setDirectOutputTo(CalledWhenDisconnected, receivedSomething);
+            }
+
+            //Show the loading box
+            loadingBox = new LoadingBox(this);
+            loadingBox.Show();
         }
 
         /* Disabled for CollaborativeSpreadsheet
@@ -135,12 +153,6 @@ namespace SpreadsheetGUI
         //Stuff to do after form loads
         private void SpreadsheetGUIForm_Load(object sender, EventArgs e)
         {
-            //Display the loading box
-            new LoadingBox().ShowDialog();
-
-
-
-
 
             //put focus on content textbox
             this.ActiveControl = this.contentTextBox;
@@ -185,6 +197,80 @@ namespace SpreadsheetGUI
             return cellName.ToUpper();
         }
         #endregion
+
+
+        /// <summary>
+        /// This method is called the first time the spreadsheet starts up and
+        /// needs to load the cells from the server. When it is done loading, then hide 
+        /// the loading box and show the spreadsheet.
+        /// </summary>
+        /// <param name="ssName"></param>
+        public void loadSpreadsheet()
+        {
+            //TODO  load the spreadsheet from the server using the ConnectionLiaison
+            Thread.Sleep(2000); //simulate a load
+            hideLoadAndShowSpreadsheet();
+        }
+
+        /// <summary>
+        /// Does what it says!
+        /// </summary>
+        private void hideLoadAndShowSpreadsheet()
+        {
+
+            //Make sure you use protection
+            SafeGuiChange(() =>
+                {
+                    loadingBox.Hide();
+                    this.Show();
+                });
+        }
+
+
+
+        private void CalledWhenDisconnected(SocketConnection sc, Exception e)
+        {
+
+        }
+
+        private void receivedSomething(MessageReceivedFrom messenger)
+        {
+            //Split the message via the special delimiter
+            string[] split = messenger.message.Split(ConnectionLiaison.ESC);
+
+            //Decide what to do with the message received
+            if (split[0] == "UPDATE")
+            {
+                SafeGuiChange(() =>
+                {
+
+
+                });
+            }
+            else if (split[0] == "SAVED")
+            {
+
+
+            }
+            else
+                MessageBox.Show("Unknown Message from server: \n" + messenger.message);
+        }
+
+
+        private void SafeGuiChange(Action toInvoke)
+        {
+
+            this.Invoke((MethodInvoker)delegate { toInvoke(); });
+        }
+
+
+
+
+
+
+
+        //----------  Original Spreadsheet stuff (mostly) -----
+
 
 
         /// <summary>
@@ -640,5 +726,6 @@ namespace SpreadsheetGUI
             /*  Disabled for SS Colaboration Project 
             SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUIForm(true));//*/
         }
+
     }
 }

@@ -76,6 +76,7 @@ namespace SS
 
         /// <summary>
         /// Tries to connect to the given server with a limit on how long it will try. If successful, it will immediately start listening for packets.
+        /// For the most part, this method is non stopping.
         /// </summary>
         /// <param name="host">Name of the host to connect to</param>
         /// <param name="port">Port number to connect to</param>
@@ -103,15 +104,9 @@ namespace SS
 
                 bool success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(timeOut));
 
-                if (!success)
+                if (!success || !client.Connected)
                 {
-                    failedToConnect("1. Failed to Connect to \"" + host + "\" on port \"" + port + "\"");
-                    return;
-                }
-
-                if (!client.Connected)
-                {
-                    failedToConnect("2. Failed to Connect to \"" + host + "\" on port \"" + port + "\"");
+                    failedToConnect("Failed to Connect to \"" + host + "\" on port " + port);
                     return;
                 }
 

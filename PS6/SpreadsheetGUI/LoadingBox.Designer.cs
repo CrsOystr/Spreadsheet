@@ -51,6 +51,7 @@
             this.MaximizeBox = false;
             this.Name = "LoadingBox";
             this.Text = "Loading Spreadsheet...";
+            this.Load += new System.EventHandler(this.LoadingBox_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -20,12 +20,11 @@ namespace SS
 
         private int port;
         const int DEFAULT_PORT = 2500;
-        const char ESC = '\u001B';
-
         /// <summary>
-        /// Gets called when there was a connection but lost it.
+        /// Represents the delimiter used for parsing communications between the Spreadsheet 
+        /// client and server.
         /// </summary>
-        public Action<string> onDisconnect;
+        public const char ESC = '\u001B';
 
 
         //*variables to be used
@@ -39,24 +38,22 @@ namespace SS
         /// <param name="whenMessageIsReceived"></param>
         public ConnectionLiaison(Action<SocketConnection, Exception> whenDisconnected, Action<MessageReceivedFrom> whenMessageIsReceived):base(whenDisconnected,whenMessageIsReceived)
         {
-
-
+            //Do nothing new, simply call the base constructor
         }
 
         /// <summary>
-        /// 
+        /// Attempts to connect to the specified server
         /// </summary>
         /// <param name="successfulConnect">Called if we successfully connect to the server</param>
         /// <param name="failedToConnect">Called if unable to connect to server at all.</param>
-        public void tryToConnect(string server, string password, Action successfulConnect, Action<string> failedToConnect)
+        public void tryToConnect(string server, Action successfulConnect, Action<string> failedToConnect)
         {
             //* check if we currently have a connection
             if (this.isConnected())
                 failedToConnect("Already have an active connection");
 
 
-
-            //Figure out if they specified a port
+            //Figure out the host name and port (if any specified)
             string[] split = server.Split(':');
 
             this.hostname = split[0]; //assume the first part is the host name
@@ -68,40 +65,13 @@ namespace SS
             }
 
 
-            //Shoots off an attempt
+            //tries to create a TCP Connection
             this.TCPConnect(hostname, port, 2, successfulConnect, failedToConnect);
-
-
-
-            /* Test code
-            TcpClient client = null;
-            if (socket == null)
-            {
-                try
-                {
-                    client = new TcpClient(hostname, 2500);
-                    Connected = true;
-                }
-                catch
-                {
-                    Connected = false;
-                }
-                if (Connected)
-                {
-                    socket = new StringSocket(client.Client, UTF8Encoding.Default);
-                    socket.BeginReceive(LineReceived, null);
-                    socket.BeginSend("PASSWORD\u001B"+password+"\n", (e, p) => { }, null);
-                }
-            }
-            //*/
-
-            //successfulConnect("Connected!");
         }
 
         public void sendPassword(string pw)
         {
             this.SendMessage("PASSWORD" + ESC + pw, null); //TODO what if fail?
-
         }
 
 
