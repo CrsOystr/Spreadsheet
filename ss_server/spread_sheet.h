@@ -15,8 +15,11 @@ namespace ss
   class spread_sheet
   {
   private:
+    int ss_version;
     depend_graph ss_dg;
-    list<string> ss_changes;
+    list<pair<string, string> > ss_changes;
+    
+    
 
   public: 
     string ss_name;
@@ -26,7 +29,9 @@ namespace ss
     
     void save();
     void undo();
-    void change(string change);
+
+    //returns true if valid change, false if not
+    bool change(string cell, string cell_content); 
 
   };
 }

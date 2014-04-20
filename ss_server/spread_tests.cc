@@ -5,6 +5,7 @@
 #include "spread_sheet.h"
 
 using namespace std;
+using namespace ss;
 
 int main()
 {
@@ -12,7 +13,12 @@ int main()
 
   {
     cout << "TEST ONE" << endl;
-    spreadsheet name("goog");
+    spread_sheet name("goog");
+    name.change("B4", "= B5 + 6");
+    name.change("B4", " B5 + 6");
+    name.change("B5", "= B4");
+
+
   }
 
 }
