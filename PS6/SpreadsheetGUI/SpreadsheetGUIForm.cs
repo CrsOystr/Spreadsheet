@@ -99,8 +99,10 @@ namespace SpreadsheetGUI
         /// <summary>
         /// Creates an empty new Spreadsheet Form
         /// </summary>
-        public SpreadsheetGUIForm(ConnectionLiaison Connection, string SpreadsheetName)
+        public SpreadsheetGUIForm(ConnectionLiaison Connection, string SpreadsheetName, bool requestNewSpreadsheet)
         {
+            //TODO deal with requestNewSpreadsheet variable
+
             initialize();
             this.fileName = SpreadsheetName;
 
@@ -263,7 +265,7 @@ namespace SpreadsheetGUI
             }
 
             //Split the message via the special delimiter
-            string[] split = messenger.message.Split(ConnectionLiaison.ESC);
+            string[] split = messenger.message.Split(connection.ESC);
 
             //Decide what to do with the message received
             if (split[0] == "UPDATE")
@@ -367,16 +369,11 @@ namespace SpreadsheetGUI
         }
 
 
-        //finished typing in content box, now try to update everything
-        private void contentTextBox_Leave(object sender, EventArgs e)
+        /// <summary>
+        /// Attempts to add the contents of the content box to the spreadsheet
+        /// </summary>
+        private void processContentTextBox()
         {
-
-            //Annoying workaround for the MessageBox double Leave problem
-            if (!contentIsFocused)
-                return;
-
-            contentIsFocused = false;
-
             //Validate content and update values/grid
             try
             {
@@ -384,7 +381,7 @@ namespace SpreadsheetGUI
             }
             catch (Exception ex)
             {
-                //If you run into any error, then display it
+                //If you run into an exception, then display it
                 MessageBox.Show("Error:" + ex.Message);
             }
             finally
@@ -459,27 +456,27 @@ namespace SpreadsheetGUI
             MessageBox.Show(helpMessage, "Instructions");
         }
 
-
-        //detects when certain buttons are pushed
+        //activate when we press a button while in the cell content box
         private void contentTextBox_KeyDown(object sender, KeyEventArgs e)
         {
+            //describes if a special key action was taken
+            bool didSomething = false;
 
-            //If enter is pressed then lose focus (which activates contentTextBox_Leave event)
+            //If enter is pressed
             if (e.KeyValue == 13)
-                this.ActiveControl = null;
+            {
+                processContentTextBox();
+                didSomething = true;
+            }
             else if (e.KeyValue == 46) //if the delete button was pressed then delete the contents of the current cell
             {
                 //set the contents to empty
                 this.contentTextBox.Text = "";
-                //trigger the cell update
-                this.ActiveControl = null;
+                //update the spreadsheet with the new cell info
+                processContentTextBox();
+                didSomething = true;
             }
 
-        }
-
-        //allows for keyboard shorcuts
-        private void contentTextBox_KeyUp(object sender, KeyEventArgs e)
-        {
             //check if the Ctrl key is being pressed
             if (e.Control)
             {
@@ -487,27 +484,43 @@ namespace SpreadsheetGUI
                 if (e.KeyValue == 37)
                 {
                     moveCursorRelative(-1, 0);
+                    didSomething = true;
                 } //38 up
                 else if (e.KeyValue == 38)
                 {
                     moveCursorRelative(0, -1);
+                    didSomething = true;
                 } //39 right
                 else if (e.KeyValue == 39)
                 {
                     moveCursorRelative(1, 0);
+                    didSomething = true;
                 } //40 down
                 else if (e.KeyValue == 40)
                 {
                     moveCursorRelative(0, 1);
-                } //other ctrl + keys
-                else if (e.KeyValue == 78)  //Ctrl + N
-                    newSpreadsheetAction();
-                else if (e.KeyValue == 79)  //Ctrl + O
-                    openDialogAction();
+                    didSomething = true;
+                } //other ctrl + keys  *** Some disabled for the collaborative spreadsheet project ***
+                //else if (e.KeyValue == 78)  //Ctrl + N
+                //    newSpreadsheetAction();
+                //else if (e.KeyValue == 79)  //Ctrl + O
+                //    openDialogAction();
                 else if (e.KeyValue == 83)  //Ctrl + S
+                {
                     saveFileAction();
-
+                    didSomething = true;
+                }
             }
+
+            //Check if we handled any special key strokes
+            if (didSomething)
+            {
+                //Declare we handled the keypress already and don't apply it to anything else
+                //These will suppress the annoying ding sound when you do something valid
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+
         }
 
         /// <summary>
@@ -571,18 +584,6 @@ namespace SpreadsheetGUI
                 throw aFit;
 
             //Otherwise, we're done!
-        }
-
-
-        /// <summary>
-        /// Describes whether or not the content box is focused.
-        /// Part of Workaround for the Messagebox-double-leave problem.
-        /// </summary>
-        bool contentIsFocused = false;
-        //Part of Workaround for the Messagebox-double-leave problem.
-        private void contentTextBox_Enter(object sender, EventArgs e)
-        {
-            contentIsFocused = true;
         }
 
 

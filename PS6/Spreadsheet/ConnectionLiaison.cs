@@ -16,16 +16,29 @@ namespace SS
         /// <summary>
         /// Address of the server to connect to
         /// </summary>
-        private string hostname;
+        public string hostname
+        {
+            get;
+            private set;
+        }
 
-        private int port;
-        const int DEFAULT_PORT = 2500;
+        public int port
+        {
+            get;
+            private set;
+        }
+
+        public const int DEFAULT_PORT = 2500;
         /// <summary>
         /// Represents the delimiter used for parsing communications between the Spreadsheet 
-        /// client and server.
+        /// client and server. This value can adapt if the server is using a different separation character (singular)
         /// </summary>
-        public const char ESC = '\u001B';
+        public char ESC;
 
+        /// <summary>
+        /// The default value for the escape sequence
+        /// </summary>
+        public const char DEFAULT_ESC = '\u001B';
 
         //*variables to be used
         private bool authenticated = false;
@@ -38,7 +51,7 @@ namespace SS
         /// <param name="whenMessageIsReceived"></param>
         public ConnectionLiaison(Action<SocketConnection, Exception> whenDisconnected, Action<MessageReceivedFrom> whenMessageIsReceived):base(whenDisconnected,whenMessageIsReceived)
         {
-            //Do nothing new, simply call the base constructor
+            ESC = DEFAULT_ESC;
         }
 
         /// <summary>
@@ -58,11 +71,14 @@ namespace SS
 
             this.hostname = split[0]; //assume the first part is the host name
             //If there was not a single split or if the second half did not parsed correctly
-            if (!(split.Length == 2 && int.TryParse(split[1], out this.port)))
+            int toTry = 0;
+            if (!(split.Length == 2 && int.TryParse(split[1], out toTry)))
             {
                 //Use the default port
                 this.port = DEFAULT_PORT;
             }
+            else
+                this.port = toTry;
 
 
             //tries to create a TCP Connection

@@ -51,7 +51,7 @@
             // 
             this.spreadsheetPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.spreadsheetPanel1.Location = new System.Drawing.Point(0, 44);
-            this.spreadsheetPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.spreadsheetPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
             this.spreadsheetPanel1.Size = new System.Drawing.Size(1024, 506);
             this.spreadsheetPanel1.TabIndex = 0;
@@ -113,7 +113,7 @@
             this.controlPanel.Controls.Add(this.menuStrip);
             this.controlPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.controlPanel.Location = new System.Drawing.Point(0, 0);
-            this.controlPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.controlPanel.Margin = new System.Windows.Forms.Padding(4);
             this.controlPanel.Name = "controlPanel";
             this.controlPanel.Size = new System.Drawing.Size(1024, 44);
             this.controlPanel.TabIndex = 5;
@@ -127,7 +127,7 @@
             this.selectedCellInfoPanel.Controls.Add(this.labelSeparator1);
             this.selectedCellInfoPanel.Controls.Add(this.CellName);
             this.selectedCellInfoPanel.Location = new System.Drawing.Point(123, 0);
-            this.selectedCellInfoPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.selectedCellInfoPanel.Margin = new System.Windows.Forms.Padding(4);
             this.selectedCellInfoPanel.Name = "selectedCellInfoPanel";
             this.selectedCellInfoPanel.Size = new System.Drawing.Size(900, 43);
             this.selectedCellInfoPanel.TabIndex = 5;
@@ -160,14 +160,11 @@
             this.contentTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.contentTextBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.contentTextBox.Location = new System.Drawing.Point(57, 6);
-            this.contentTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.contentTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.contentTextBox.Name = "contentTextBox";
             this.contentTextBox.Size = new System.Drawing.Size(133, 27);
             this.contentTextBox.TabIndex = 2;
-            this.contentTextBox.Enter += new System.EventHandler(this.contentTextBox_Enter);
             this.contentTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.contentTextBox_KeyDown);
-            this.contentTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.contentTextBox_KeyUp);
-            this.contentTextBox.Leave += new System.EventHandler(this.contentTextBox_Leave);
             // 
             // labelSeparator1
             // 
@@ -199,7 +196,7 @@
             this.ClientSize = new System.Drawing.Size(1024, 550);
             this.Controls.Add(this.spreadsheetPanel1);
             this.Controls.Add(this.controlPanel);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SpreadsheetGUIForm";
             this.Text = "- Spreadsheet";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SpreadsheetGUIForm_FormClosing);
