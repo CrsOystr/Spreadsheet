@@ -295,7 +295,98 @@
             
             </summary>
         </member>
-        <member name="F:SS.ConnectionLiaison.server">
+        <member name="T:SS.SocketConnection">
+            <summary>
+            Holds a socket connection and manages the sending and reciving of messages as well as disconnects.
+            </summary>
+        </member>
+        <member name="F:SS.SocketConnection.CallWhenDisconnected">
+            <summary>
+            The function that is called when the connection is lost.
+            </summary>
+        </member>
+        <member name="F:SS.SocketConnection.directOutputTo">
+            <summary>
+            This delegate directs the incoming message to the appropriate place for processing.
+            The SocketConnection cannot process any more incoming messages (but can received them) until this function has finished.
+            </summary>
+        </member>
+        <member name="F:SS.SocketConnection.sock">
+            <summary>
+            The underlying socket.
+            </summary>
+        </member>
+        <member name="F:SS.SocketConnection.ss">
+            <summary>
+            Class used for low-level sending and recieving of messages.
+            </summary>
+        </member>
+        <member name="F:SS.SocketConnection.GagLock">
+            <summary>
+            As long as this object is locked, this SocketConnection will not process any more received messages (but it can still recieve them).
+            </summary>
+        </member>
+        <member name="M:SS.SocketConnection.#ctor(System.Action{SS.SocketConnection,System.Exception},System.Action{SS.MessageReceivedFrom})">
+            <summary>
+            Constructor without an existing socket connection.
+            </summary>
+            <param name="sock">The underlying connection used for communication.</param>
+            <param name="whenMessageIsReceived">Function that is called when a message is received</param>
+            <param name="whenDisconnected">Event called when the connection is lost.</param>
+        </member>
+        <member name="M:SS.SocketConnection.#ctor(System.Net.Sockets.Socket,System.Action{SS.SocketConnection,System.Exception},System.Action{SS.MessageReceivedFrom})">
+            <summary>
+            Constructor for an already existing socket connection. Begins listening for messages.
+            </summary>
+            <param name="sock">The underlying connection used for communication.</param>
+            <param name="whenMessageIsReceived">Function that is called when a message is received</param>
+            <param name="whenDisconnected">Event called when the connection is lost.</param>
+        </member>
+        <member name="M:SS.SocketConnection.TCPConnect(System.String,System.Int32,System.Int32,System.Action,System.Action{System.String})">
+            <summary>
+            Tries to connect to the given server with a limit on how long it will try. If successful, it will immediately start listening for packets.
+            </summary>
+            <param name="host">Name of the host to connect to</param>
+            <param name="port">Port number to connect to</param>
+            <param name="timeOut">Number of seconds</param>
+            <param name="successfullyConnected">Method to call when we successfully connect to the server.</param>
+            <param name="failedToConnect">Method to call if we fail to connect to the server in the designated time frame.</param>
+            <returns>Returns true if we even tried to connect to the host, or false if we already have an active connection and did not try to connect to the new host.</returns>
+        </member>
+        <member name="M:SS.SocketConnection.setDirectOutputTo(System.Action{SS.SocketConnection,System.Exception},System.Action{SS.MessageReceivedFrom})">
+            <summary>
+            Changes where the SocketConnection sends further output to.
+            </summary>
+            <param name="whenMessageIsReceived">Directs the incoming message to the appropriate place for processing</param>
+            <param name="whenDisconnected">Event called when the connection is lost.</param>
+        </member>
+        <member name="M:SS.SocketConnection.receivedSomething(System.String,System.Exception,System.Object)">
+            <summary>
+            Function called when we receive a message.
+            </summary>
+            <param name="s">The message received.</param>
+            <param name="e">Arbitrary exception object that may be sent by the string socket</param>
+            <param name="payload">Expected to always be null.</param>
+        </member>
+        <member name="M:SS.SocketConnection.SendMessage(System.String,System.Action{System.Exception,System.Object})">
+            <summary>
+            Sends a message through the connection.
+            </summary>
+            <param name="p">Message to be sent. The '\n' character is automatically attached to the end of the message.</param>
+            <param name="theSendCallback">The function to call when we have a result of sending the message.</param>
+        </member>
+        <member name="M:SS.SocketConnection.isConnected">
+            <summary>
+            Determines if the underlying socket is still connected.
+            </summary>
+            <returns>True if the socket is still connected.</returns>
+        </member>
+        <member name="M:SS.SocketConnection.CloseSocketConnection">
+            <summary>
+            Makes sure the connection to the player is closed.
+            </summary>
+        </member>
+        <member name="F:SS.ConnectionLiaison.hostname">
             <summary>
             Address of the server to connect to
             </summary>
@@ -305,31 +396,41 @@
             Gets called when there was a connection but lost it.
             </summary>
         </member>
-        <member name="M:SS.ConnectionLiaison.#ctor(System.String,System.Action{System.String})">
+        <member name="M:SS.ConnectionLiaison.#ctor(System.Action{SS.SocketConnection,System.Exception},System.Action{SS.MessageReceivedFrom})">
             <summary>
-            Sets up a ConnectionLiaison. Does not automatically connect upon initialization.
+            
             </summary>
-            <param name="server">Address of the server this connection will be associated with.</param>
-            <param name="onDisconnect">This will be called when there was a connection but we lost it.</param>
+            <param name="whenDisconnected"></param>
+            <param name="whenMessageIsReceived"></param>
         </member>
-        <member name="M:SS.ConnectionLiaison.tryToConnect(System.Action{System.String},System.Action{System.String})">
+        <member name="M:SS.ConnectionLiaison.tryToConnect(System.String,System.String,System.Action,System.Action{System.String})">
             <summary>
             
             </summary>
             <param name="successfulConnect">Called if we successfully connect to the server</param>
             <param name="failedToConnect">Called if unable to connect to server at all.</param>
         </member>
-        <member name="M:SS.ConnectionLiaison.echo(System.String)">
+        <member name="T:SS.MessageReceivedFrom">
             <summary>
-            
+            Only used when an actual message has been received. Contains a SocketConnection that recieved the message along with the message recieved.
             </summary>
-            <param name="s"></param>
-            <returns></returns>
         </member>
-        <member name="P:SS.ConnectionLiaison.Connected">
+        <member name="F:SS.MessageReceivedFrom.connection">
             <summary>
-            Describes if this has a connection to a server.
+            The SocketConnection that received the message.
             </summary>
+        </member>
+        <member name="F:SS.MessageReceivedFrom.message">
+            <summary>
+            The message received.
+            </summary>
+        </member>
+        <member name="M:SS.MessageReceivedFrom.#ctor(SS.SocketConnection,System.String)">
+            <summary>
+            Stores the following parameters
+            </summary>
+            <param name="connection">The SocketConnection that received the message.</param>
+            <param name="s">The message received.</param>
         </member>
         <member name="T:SS.Spreadsheet">
             <summary>

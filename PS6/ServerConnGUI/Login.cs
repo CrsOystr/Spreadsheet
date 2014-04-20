@@ -25,13 +25,6 @@ namespace ServerConnGUI
         int smallFormHeight = 180;
         int largeFormHeight;
 
-        /*variables to be used
-        private bool authenticated = false;
-        private bool connected = false;
-        private string PW = "";
-        private string IP = "";
-        private StringSocket socket;
-        //*/
 
         private ConnectionLiaison heldConnection;
       
@@ -62,44 +55,21 @@ namespace ServerConnGUI
         /// <summary>
         /// Connect to the server at the given hostname and port and with the give name.
         /// </summary>
-        private void EstablishConnection(string hostname, int port, String password, Action<string> onConnect, Action<string> onFail)
+        private void EstablishConnection(string hostname, int port, Action onConnect, Action<string> onFail)
         {
-            if (heldConnection != null && heldConnection.Connected)
+            //Check if we have a current connection, if we do then disconnect the previous one and make the new connection
+            if (heldConnection != null && heldConnection.isConnected())
             {
-
+                    //If we are currently connected then disconnect 
+                    //TODO heldConnection.disconnect();
             }
 
 
             //Update GUI status
             SetConnectionState(state.connecting);
 
-
-            ConnectionLiaison cl = new ConnectionLiaison(hostname, null);
-            cl.tryToConnect(onConnect, onFail);
-
-
-            /*
-            TcpClient client = null;
-            if (socket == null)
-            {
-                try
-                {
-                    client = new TcpClient(hostname, port);
-                    connected = true;
-                }
-                catch
-                {
-                    connected = false;
-                }
-                if (connected)
-                {
-                    socket = new StringSocket(client.Client, UTF8Encoding.Default);
-                    socket.BeginReceive(LineReceived, null);
-                    socket.BeginSend("PASSWORD\u001Bjames\n", (e, p) => { }, null);
-                }
-            }
-            return connected;
-            //*/
+            heldConnection = new ConnectionLiaison(null, ReceivedSomething);
+            heldConnection.tryToConnect(hostname, PW_textbox.Text, onConnect, onFail);
         }
 
 
@@ -108,26 +78,25 @@ namespace ServerConnGUI
             this.Invoke((MethodInvoker)delegate { toInvoke(); });
         }
 
-        /*
-        private void LineReceived(string s, Exception e, object payload)
-        {
-            MessageBox.Show(s);
-        }
-        //*/
-
-
 
         //-------------------------------------- Call Backs for other threads. ----------------------------------------
         //------  If you change the GUI directly use "SafeGuiChange(Action a)", otherwise, you may get a "Cross-thread operation not valid" --------------
 
 
-        public void LoggedIn(string s)
+        public void connected()
         {
-            //ViewState already uses SafeGuiChange, so we don't need to do it here
-            SetConnectionState(state.connected);
+            //Now talk
+            heldConnection.SendMessage("talk back to meh", null);
+
+            //Send password
+            heldConnection.sendPassword(PW_textbox.Text);
 
             //Get spreadsheets from server
             //TODO
+
+
+            //ViewState already uses SafeGuiChange, so we don't need to do it here
+            SetConnectionState(state.connected);
         }
 
         public void FailedConnection(string s)
@@ -139,7 +108,14 @@ namespace ServerConnGUI
         }
 
 
-
+        /// <summary>
+        /// Method called when the server sends us something
+        /// </summary>
+        /// <param name="messenger"></param>
+        public void ReceivedSomething(MessageReceivedFrom messenger)
+        {
+            MessageBox.Show("Server says: " + messenger.message);
+        }
 
 
 
@@ -205,7 +181,7 @@ namespace ServerConnGUI
                 else
                 {
                     //Try to connect and login to the server. This method shouldn't hold on to the GUI thread for very long.
-                    EstablishConnection(IP_textbox.Text, 2500, PW_textbox.Text, LoggedIn, FailedConnection);
+                    EstablishConnection(IP_textbox.Text, 2500, connected, FailedConnection);
                 }
             }
         }
@@ -229,10 +205,11 @@ namespace ServerConnGUI
         {
             var list = (ListBox)sender;
 
-            // This is your selected item
+            // Grab the selected item
             string item = list.SelectedItem.ToString();
 
             new SpreadsheetGUIForm(heldConnection, item).Show();
+            ServerButton_Click(null, null);
         }
 
 

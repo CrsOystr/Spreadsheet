@@ -1,46 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using CustomNetworking;
 
 namespace SS
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ConnectionLiaison
+    public class ConnectionLiaison : SocketConnection
     {
         /// <summary>
         /// Address of the server to connect to
         /// </summary>
-        private string server;
+        private string hostname;
+
+        private int port;
+        const int DEFAULT_PORT = 2500;
+        const char ESC = '\u001B';
 
         /// <summary>
         /// Gets called when there was a connection but lost it.
         /// </summary>
         public Action<string> onDisconnect;
 
-        /// <summary>
-        /// Describes if this has a connection to a server.
-        /// </summary>
-        public bool Connected
-        {
-            get;
-            private set;
-        }
 
+        //*variables to be used
+        private bool authenticated = false;
 
 
         /// <summary>
-        /// Sets up a ConnectionLiaison. Does not automatically connect upon initialization.
+        /// 
         /// </summary>
-        /// <param name="server">Address of the server this connection will be associated with.</param>
-        /// <param name="onDisconnect">This will be called when there was a connection but we lost it.</param>
-        public ConnectionLiaison(string server, Action<string> onDisconnect)
+        /// <param name="whenDisconnected"></param>
+        /// <param name="whenMessageIsReceived"></param>
+        public ConnectionLiaison(Action<SocketConnection, Exception> whenDisconnected, Action<MessageReceivedFrom> whenMessageIsReceived):base(whenDisconnected,whenMessageIsReceived)
         {
-            this.server = server;
-            this.onDisconnect = onDisconnect;
+
+
         }
 
         /// <summary>
@@ -48,26 +48,63 @@ namespace SS
         /// </summary>
         /// <param name="successfulConnect">Called if we successfully connect to the server</param>
         /// <param name="failedToConnect">Called if unable to connect to server at all.</param>
-        public void tryToConnect(Action<string> successfulConnect, Action<string> failedToConnect)
+        public void tryToConnect(string server, string password, Action successfulConnect, Action<string> failedToConnect)
         {
-            ThreadPool.QueueUserWorkItem((o) =>
+            //* check if we currently have a connection
+            if (this.isConnected())
+                failedToConnect("Already have an active connection");
+
+
+
+            //Figure out if they specified a port
+            string[] split = server.Split(':');
+
+            this.hostname = split[0]; //assume the first part is the host name
+            //If there was not a single split or if the second half did not parsed correctly
+            if (!(split.Length == 2 && int.TryParse(split[1], out this.port)))
             {
-                Thread.Sleep(1000);
-                successfulConnect("Connected!");
-            });
+                //Use the default port
+                this.port = DEFAULT_PORT;
+            }
 
+
+            //Shoots off an attempt
+            this.TCPConnect(hostname, port, 2, successfulConnect, failedToConnect);
+
+
+
+            /* Test code
+            TcpClient client = null;
+            if (socket == null)
+            {
+                try
+                {
+                    client = new TcpClient(hostname, 2500);
+                    Connected = true;
+                }
+                catch
+                {
+                    Connected = false;
+                }
+                if (Connected)
+                {
+                    socket = new StringSocket(client.Client, UTF8Encoding.Default);
+                    socket.BeginReceive(LineReceived, null);
+                    socket.BeginSend("PASSWORD\u001B"+password+"\n", (e, p) => { }, null);
+                }
+            }
+            //*/
+
+            //successfulConnect("Connected!");
         }
 
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public string echo(string s)
+        public void sendPassword(string pw)
         {
-            return s.ToUpper();
+            this.SendMessage("PASSWORD" + ESC + pw, null); //TODO what if fail?
+
         }
+
+
+
     }
 }
