@@ -45,7 +45,7 @@
             this.IP_textbox.Name = "IP_textbox";
             this.IP_textbox.Size = new System.Drawing.Size(135, 20);
             this.IP_textbox.TabIndex = 0;
-            this.IP_textbox.Text = "lab2-10.eng.utah.edu";
+            this.IP_textbox.Text = "127.0.0.1:3000";
             this.IP_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.waitForEnter);
             // 
             // label1
@@ -140,6 +140,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.IP_textbox);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Login";
             this.Text = "Login to server";
