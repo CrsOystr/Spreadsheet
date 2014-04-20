@@ -69,12 +69,14 @@ namespace SS
             this.TCPConnect(hostname, port, 2, successfulConnect, failedToConnect);
         }
 
+
         public void sendPassword(string pw)
         {
             this.SendMessage("PASSWORD" + ESC + pw, null); //TODO what if fail?
         }
 
 
+        // ** TODO  Create more methods like the sendPassword that the Spreadsheet can use
 
     }
 }

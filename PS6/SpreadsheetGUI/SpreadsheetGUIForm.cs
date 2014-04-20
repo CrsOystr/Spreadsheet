@@ -21,8 +21,7 @@ namespace SpreadsheetGUI
 
         ConnectionLiaison connection;
         LoadingBox loadingBox;
-        string SpreadsheetName;
-
+        bool firstShown = true;
 
         #region Initializing stuff
 
@@ -95,7 +94,7 @@ namespace SpreadsheetGUI
         /// as well as the version which is recorded when
         /// a spreadsheet is saved.
         /// </summary>
-        const string version = "ps6";
+        const string versionType = "ps6";
 
         /// <summary>
         /// Creates an empty new Spreadsheet Form
@@ -103,18 +102,17 @@ namespace SpreadsheetGUI
         public SpreadsheetGUIForm(ConnectionLiaison Connection, string SpreadsheetName)
         {
             initialize();
-            this.SpreadsheetName = SpreadsheetName;
+            this.fileName = SpreadsheetName;
 
-            //Take over the connection
+            //Take over the connection with the server
             lock (Connection.GagLock)
             {
                 this.connection = Connection;
                 this.connection.setDirectOutputTo(CalledWhenDisconnected, receivedSomething);
             }
 
-            //Show the loading box
-            loadingBox = new LoadingBox(this);
-            loadingBox.Show();
+            //Initially the form is disabled until it has loaded all the cell data
+            this.Enabled = false;
         }
 
         /* Disabled for CollaborativeSpreadsheet
@@ -168,7 +166,7 @@ namespace SpreadsheetGUI
             this.ActiveControl = null;
 
             //create a blank spreadsheet
-            ss = new Spreadsheet(isValid, normalize, version);
+            ss = new Spreadsheet(isValid, normalize, versionType);
 
             //set initial fileName (including path)
             fileName = Directory.GetCurrentDirectory() + @"\Untitled.ss";
@@ -207,34 +205,63 @@ namespace SpreadsheetGUI
         /// <param name="ssName"></param>
         public void loadSpreadsheet()
         {
-            //TODO  load the spreadsheet from the server using the ConnectionLiaison
-            Thread.Sleep(2000); //simulate a load
-            hideLoadAndShowSpreadsheet();
+            //Show the loading box
+            loadingBox = new LoadingBox(this);
+            loadingBox.Show();
+
+            ThreadPool.QueueUserWorkItem((o) =>
+                {
+                    // ** TODO  load the spreadsheet from the server using the ConnectionLiaison
+                    Thread.Sleep(2000); //simulate a load
+                    // **
+
+                    //
+                    doneLoading();
+                });
         }
 
         /// <summary>
-        /// Does what it says!
+        /// This method will hide the loading box and re-enable the form
         /// </summary>
-        private void hideLoadAndShowSpreadsheet()
+        private void doneLoading()
         {
-
-            //Make sure you use protection
+            //Make sure you use protection. God I'm tired.
             SafeGuiChange(() =>
                 {
+                    //Done with the loading box
                     loadingBox.Hide();
-                    this.Show();
+                    //Re-enable the spreadsheet form
+                    this.Enabled = true;
                 });
         }
 
 
-
+        /// <summary>
+        /// The method called when we lose the connection.
+        /// </summary>
+        /// <param name="sc"></param>
+        /// <param name="e"></param>
         private void CalledWhenDisconnected(SocketConnection sc, Exception e)
         {
-
+            //** TODO
         }
 
+        /// <summary>
+        /// Method called whenever the server sends us something.
+        /// The connection manager will not process any other 
+        /// receive commands until this method has finished
+        /// (So don't let this method stall for a long time)
+        /// </summary>
+        /// <param name="messenger"></param>
         private void receivedSomething(MessageReceivedFrom messenger)
         {
+            //We shouldn't be getting any nulls here, but just in case...
+            if (messenger == null || messenger.message == null)
+            {
+                MessageBox.Show("Given an invalid message?");
+                return;
+            }
+
             //Split the message via the special delimiter
             string[] split = messenger.message.Split(ConnectionLiaison.ESC);
 
@@ -243,24 +270,46 @@ namespace SpreadsheetGUI
             {
                 SafeGuiChange(() =>
                 {
-
+                    //** TODO
+                    MessageBox.Show("UPDATE!"); //Technically, MessageBox doesn't need to use SafeGuiChange.
 
                 });
             }
             else if (split[0] == "SAVED")
             {
+                //** TODO
+                MessageBox.Show("SAVED!");
+            }
+            else if (split[0] == "SYNC")
+            {
+                //** TODO
+                MessageBox.Show("SYNC!");
 
-
+            }
+            else if (split[0] == "ERROR")
+            {
+                //** TODO?
+                MessageBox.Show("Server Error: " + split[1]);
             }
             else
                 MessageBox.Show("Unknown Message from server: \n" + messenger.message);
         }
 
 
+        /// <summary>
+        /// Ensures any changes to the GUI will be made in the appropriate thread. Example:
+        /// 
+        ///   SafeGuiChange(() =>
+        ///   {
+        ///       label1.text = "I can change!";
+        ///   });
+        /// 
+        /// </summary>
+        /// <param name="toInvoke"></param>
         private void SafeGuiChange(Action toInvoke)
         {
-
-            this.Invoke((MethodInvoker)delegate { toInvoke(); });
+            if (this.IsHandleCreated)
+                this.Invoke((MethodInvoker)delegate { toInvoke(); });
         }
 
 
@@ -325,6 +374,7 @@ namespace SpreadsheetGUI
             //Annoying workaround for the MessageBox double Leave problem
             if (!contentIsFocused)
                 return;
+
             contentIsFocused = false;
 
             //Validate content and update values/grid
@@ -413,6 +463,7 @@ namespace SpreadsheetGUI
         //detects when certain buttons are pushed
         private void contentTextBox_KeyDown(object sender, KeyEventArgs e)
         {
+
             //If enter is pressed then lose focus (which activates contentTextBox_Leave event)
             if (e.KeyValue == 13)
                 this.ActiveControl = null;
@@ -423,6 +474,7 @@ namespace SpreadsheetGUI
                 //trigger the cell update
                 this.ActiveControl = null;
             }
+
         }
 
         //allows for keyboard shorcuts
@@ -595,7 +647,7 @@ namespace SpreadsheetGUI
                     IEnumerable<string> oldCellsToWipe = ss.GetNamesOfAllNonemptyCells();
 
                     //load the new spreadsheet data (might throw an error)
-                    ss = new Spreadsheet(of.FileName, isValid, normalize, version);
+                    ss = new Spreadsheet(of.FileName, isValid, normalize, versionType);
 
                     //save the FileName
                     fileName = of.FileName;
@@ -725,6 +777,16 @@ namespace SpreadsheetGUI
         {
             /*  Disabled for SS Colaboration Project 
             SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUIForm(true));//*/
+        }
+
+        private void SpreadsheetGUIForm_Shown(object sender, EventArgs e)
+        {
+            //When the spreadsheet is shown 
+            if (firstShown)
+            {
+                firstShown = false;
+                loadSpreadsheet();
+            }
         }
 
     }

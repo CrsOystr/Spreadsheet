@@ -1,0 +1,12 @@
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Spreadsheet.dll
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Spreadsheet.pdb
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Spreadsheet.XML
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\DependencyGraph.dll
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Formula.dll
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\StringSocket.dll
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\DependencyGraph.xml
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Formula.xml
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\StringSocket.xml
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.dll
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.pdb
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.csprojResolveAssemblyReference.cache

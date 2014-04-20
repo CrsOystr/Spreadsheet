@@ -80,7 +80,8 @@ namespace ServerConnGUI
 
         private void SafeGuiChange(Action toInvoke)
         {
-            this.Invoke((MethodInvoker)delegate { toInvoke(); });
+            if (this.IsHandleCreated)
+                this.Invoke((MethodInvoker)delegate { toInvoke(); });
         }
 
 
@@ -131,6 +132,7 @@ namespace ServerConnGUI
             string[] split = messenger.message.Split(ConnectionLiaison.ESC);
 
             //Decide what to do with the message received
+            //Password accepted, get a list of all available spreadsheets
             if (split[0] == "FILELIST")
             {
                 SafeGuiChange(() =>
@@ -140,7 +142,7 @@ namespace ServerConnGUI
                             ssListBox.Items.Add(split[i]);
                     });
             }
-            else if (split[0] == "INVALID")
+            else if (split[0] == "INVALID") //Password was rejected
             {
                 MessageBox.Show("Invalid password");
                 SetConnectionState(state.notLoggedIn);
@@ -152,7 +154,10 @@ namespace ServerConnGUI
         }
 
 
-
+        /// <summary>
+        /// Updates the GUI based off of what the connection state supposedly is.
+        /// </summary>
+        /// <param name="s">The new state of the connection</param>
         private void SetConnectionState(state s)
         {
             //Safely Change the GUI as other threads may have set this property
@@ -178,6 +183,7 @@ namespace ServerConnGUI
                 else if (s == state.lostConnection || s == state.notLoggedIn)
                 {
                     //this.Height = smallFormHeight;
+                    ssListBox.Enabled = false;
                     StatusLabel.Text = "Not connected";
                     ServerButton.Enabled = true;
                     ServerButton.Text = "Connect";
@@ -198,21 +204,12 @@ namespace ServerConnGUI
         {
             if (ServerButton.Enabled == true)
             {
-
-
-                //Verify the validity of the server info
-
+                //Verify the validity of the server info:
                 //if the IP isn't entered error box
                 if (IP_textbox.Text.Length < 1)
                 {
                     MessageBox.Show("Please enter a valid server IP address");
                 }
-                //if PW text box has no value error box
-                else if (PW_textbox.Text == "")
-                {
-                    MessageBox.Show("Please enter a password to connect to the server");
-                }
-                //if both tb.text field have values, save them as variables
                 else
                 {
                     //Try to connect and login to the server. This method shouldn't hold on to the GUI thread for very long.
@@ -232,21 +229,34 @@ namespace ServerConnGUI
                 //Suppress the annoying ding
                 e.Handled = true;
                 e.SuppressKeyPress = true;
-
             }
         }
 
+        /// <summary>
+        /// Takes the selected item from the sender and opens a new SpreadsheetGUI with the current connection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ssListBox_DoubleClick(object sender, EventArgs e)
         {
             var list = (ListBox)sender;
 
+            //if there isn't anything selected, then do nothing
+            if (list.SelectedItem == null)
+                return;
+
             // Grab the selected item
             string item = list.SelectedItem.ToString();
 
-            //Do not show the GUI form! It will come out when it's ready.
-            new SpreadsheetGUIForm(connection, item).loadSpreadsheet();
-            //Reconnect to the server
-            ServerButton_Click(null, null);
+            //make sure we have a connection
+            if (connection != null && connection.isConnected())
+            {
+                //Do not show the GUI form! It will come out when it's ready.
+                new SpreadsheetGUIForm(connection, item).Show();
+
+                //Reconnect to the server
+                ServerButton_Click(null, null);
+            }
         }
 
 

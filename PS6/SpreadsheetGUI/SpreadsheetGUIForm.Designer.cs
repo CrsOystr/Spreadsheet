@@ -50,9 +50,10 @@
             // spreadsheetPanel1
             // 
             this.spreadsheetPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.spreadsheetPanel1.Location = new System.Drawing.Point(0, 36);
+            this.spreadsheetPanel1.Location = new System.Drawing.Point(0, 44);
+            this.spreadsheetPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
-            this.spreadsheetPanel1.Size = new System.Drawing.Size(768, 411);
+            this.spreadsheetPanel1.Size = new System.Drawing.Size(1024, 506);
             this.spreadsheetPanel1.TabIndex = 0;
             // 
             // menuStrip
@@ -61,9 +62,10 @@
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem1,
             this.helpToolStripMenuItem1});
-            this.menuStrip.Location = new System.Drawing.Point(0, 5);
+            this.menuStrip.Location = new System.Drawing.Point(0, 6);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(89, 24);
+            this.menuStrip.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
+            this.menuStrip.Size = new System.Drawing.Size(107, 28);
             this.menuStrip.TabIndex = 3;
             this.menuStrip.Text = "menuStrip2";
             // 
@@ -74,34 +76,34 @@
             this.saveAsToolStripMenuItem,
             this.closeToolStripMenuItem2});
             this.fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
-            this.fileToolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem1.Size = new System.Drawing.Size(44, 24);
             this.fileToolStripMenuItem1.Text = "File";
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(208, 24);
             this.saveToolStripMenuItem.Text = "Save            (Ctrl+S)";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(208, 24);
             this.saveAsToolStripMenuItem.Text = "Save As...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // closeToolStripMenuItem2
             // 
             this.closeToolStripMenuItem2.Name = "closeToolStripMenuItem2";
-            this.closeToolStripMenuItem2.Size = new System.Drawing.Size(176, 22);
+            this.closeToolStripMenuItem2.Size = new System.Drawing.Size(208, 24);
             this.closeToolStripMenuItem2.Text = "Close          (Alt+F4)";
             this.closeToolStripMenuItem2.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(53, 24);
             this.helpToolStripMenuItem1.Text = "Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
@@ -111,8 +113,9 @@
             this.controlPanel.Controls.Add(this.menuStrip);
             this.controlPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.controlPanel.Location = new System.Drawing.Point(0, 0);
+            this.controlPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.controlPanel.Name = "controlPanel";
-            this.controlPanel.Size = new System.Drawing.Size(768, 36);
+            this.controlPanel.Size = new System.Drawing.Size(1024, 44);
             this.controlPanel.TabIndex = 5;
             // 
             // selectedCellInfoPanel
@@ -123,9 +126,10 @@
             this.selectedCellInfoPanel.Controls.Add(this.contentTextBox);
             this.selectedCellInfoPanel.Controls.Add(this.labelSeparator1);
             this.selectedCellInfoPanel.Controls.Add(this.CellName);
-            this.selectedCellInfoPanel.Location = new System.Drawing.Point(92, 0);
+            this.selectedCellInfoPanel.Location = new System.Drawing.Point(123, 0);
+            this.selectedCellInfoPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.selectedCellInfoPanel.Name = "selectedCellInfoPanel";
-            this.selectedCellInfoPanel.Size = new System.Drawing.Size(676, 36);
+            this.selectedCellInfoPanel.Size = new System.Drawing.Size(900, 43);
             this.selectedCellInfoPanel.TabIndex = 5;
             // 
             // valueLabel
@@ -133,9 +137,10 @@
             this.valueLabel.AutoSize = true;
             this.valueLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.valueLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.valueLabel.Location = new System.Drawing.Point(178, 7);
+            this.valueLabel.Location = new System.Drawing.Point(237, 9);
+            this.valueLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.valueLabel.Name = "valueLabel";
-            this.valueLabel.Size = new System.Drawing.Size(69, 17);
+            this.valueLabel.Size = new System.Drawing.Size(91, 22);
             this.valueLabel.TabIndex = 4;
             this.valueLabel.Text = "                    ";
             // 
@@ -143,9 +148,10 @@
             // 
             this.labelSeparator2.AutoSize = true;
             this.labelSeparator2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelSeparator2.Location = new System.Drawing.Point(149, 7);
+            this.labelSeparator2.Location = new System.Drawing.Point(199, 9);
+            this.labelSeparator2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelSeparator2.Name = "labelSeparator2";
-            this.labelSeparator2.Size = new System.Drawing.Size(23, 15);
+            this.labelSeparator2.Size = new System.Drawing.Size(29, 20);
             this.labelSeparator2.TabIndex = 3;
             this.labelSeparator2.Text = "==";
             // 
@@ -153,9 +159,10 @@
             // 
             this.contentTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.contentTextBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.contentTextBox.Location = new System.Drawing.Point(43, 5);
+            this.contentTextBox.Location = new System.Drawing.Point(57, 6);
+            this.contentTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.contentTextBox.Name = "contentTextBox";
-            this.contentTextBox.Size = new System.Drawing.Size(100, 23);
+            this.contentTextBox.Size = new System.Drawing.Size(133, 27);
             this.contentTextBox.TabIndex = 2;
             this.contentTextBox.Enter += new System.EventHandler(this.contentTextBox_Enter);
             this.contentTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.contentTextBox_KeyDown);
@@ -166,9 +173,10 @@
             // 
             this.labelSeparator1.AutoSize = true;
             this.labelSeparator1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelSeparator1.Location = new System.Drawing.Point(27, 7);
+            this.labelSeparator1.Location = new System.Drawing.Point(36, 9);
+            this.labelSeparator1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelSeparator1.Name = "labelSeparator1";
-            this.labelSeparator1.Size = new System.Drawing.Size(10, 15);
+            this.labelSeparator1.Size = new System.Drawing.Size(12, 20);
             this.labelSeparator1.TabIndex = 1;
             this.labelSeparator1.Text = ":";
             // 
@@ -176,24 +184,27 @@
             // 
             this.CellName.AutoSize = true;
             this.CellName.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CellName.Location = new System.Drawing.Point(5, 8);
+            this.CellName.Location = new System.Drawing.Point(7, 10);
+            this.CellName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.CellName.Name = "CellName";
-            this.CellName.Size = new System.Drawing.Size(21, 15);
+            this.CellName.Size = new System.Drawing.Size(27, 20);
             this.CellName.TabIndex = 0;
             this.CellName.Text = "A1";
             // 
             // SpreadsheetGUIForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
-            this.ClientSize = new System.Drawing.Size(768, 447);
+            this.ClientSize = new System.Drawing.Size(1024, 550);
             this.Controls.Add(this.spreadsheetPanel1);
             this.Controls.Add(this.controlPanel);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "SpreadsheetGUIForm";
             this.Text = "- Spreadsheet";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SpreadsheetGUIForm_FormClosing);
             this.Load += new System.EventHandler(this.SpreadsheetGUIForm_Load);
+            this.Shown += new System.EventHandler(this.SpreadsheetGUIForm_Shown);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.controlPanel.ResumeLayout(false);
