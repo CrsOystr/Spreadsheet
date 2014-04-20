@@ -70,65 +70,54 @@ void * thread_handle_clients(void *arg)
     
     for(i = 0; buf[i] != '\e'; i++)
       {
-	command[i] = buf[i];
+	//command[i] = buf[i];
 	k = i;
       }
 
-    // for(i = 0; i != '\n'; i++)
-    //{
-	//if(//command[i] == pass_command[i])
-	//{
-	//printf("authenticating\n");
     bool authen = authentication(buf,k);
     
     if(authen)
       {	
-	printf("authenticated");
+	printf("authenticated\n");
 	
-	//temp = "Authentication succeeded"; 
+	buf[0] = 'P';
+	buf[1] = 'a';
+	buf[2] = 's';
+	buf[3] = 's';
+	buf[4] = 'w';
+	buf[5] = 'o';
+	buf[6] = 'r';
+	buf[7] = 's';
+	buf[8] = ' ';
+	buf[9] = 'A';
+	buf[10] = 'c';
+	buf[11] = 'c';
+	buf[12] = 'e';
+	buf[13] = 'p';
+	buf[14] = 't';
+	buf[15] = 'e';
+	buf[16] = 'd';
+	buf[17] = '\n';
+
 	
-	/*if(-1 == send(connectionfd, temp, rb, 0))
+	if(-1 == send(connectionfd, buf, rb, 0))
 	  {
 	    perror("Server: thread send failed authenicated");
 	    return NULL;
-	    }*/
+	  }
       }
     else
       {
 	printf("authen failed");
-	//temp = "Authentication Failed"; 
 
-	/*if(-1 == send(connectionfd, temp, rb, 0))
+	if(-1 == send(connectionfd, temp, rb, 0))
 	  {
 	    perror("Server: thread send failed authen failed");
 	    return NULL;
-	    }*/
+	  }
        }
-	    //}
-	    //}
-   
-    //send back message and error code if send fails
-    //
-    temp[0] = '\n';
-    temp[1] = 'K';
-    temp[2] = 'L';
-    temp[3] = 'o';
-    temp[4] = 'g';
-    temp[5] = 'i';
-    temp[6] = 'n';
-    temp[7] = ' ';
-    temp[8] = 'S';
-    temp[9] = 'u';
-    temp[10] = 'c';
-    temp[11] = 'c';
-    temp[12] = 'e';
-    temp[13] = 'e';
-    temp[14] = 'd';
-    temp[15] = 'e';
-    temp[16] = 'd';
-    temp[17] = '\n';
-    
-    //temp = "authentication is a bitch";
+	      
+  
     
     if(-1 == send(connectionfd,temp, rb, 0))
       {
@@ -148,7 +137,7 @@ bool authentication(char buf[], int escseq)
   FILE* file;
   char line[256];
   char pass[256];
-  bool authenticated = false;
+  bool authenticated = true;
   int i, j;
 
   file = fopen(fileName, "r");
@@ -157,11 +146,12 @@ bool authentication(char buf[], int escseq)
     {
       for(i = 0; line[i] != '\n'; i++)
 	{
-	  printf("%c line at %i\n ",line[i], i);
-	  printf("%c buf at  %i\n ", buf[escseq+2+i], i);
-	  if(line[i] == buf[escseq+2+i])
+	  printf("line at %i: %c\n ",i,line[i]);
+	  printf("buf at  %i: %c\n ",i, buf[escseq+2+i]);
+	  if(line[i] != buf[escseq+2+i])
 	    {
-	      authenticated = true;
+	      authenticated = false;
+	      return authenticated;
 	    }
 	}
     }
