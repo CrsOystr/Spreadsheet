@@ -3,6 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicCSharp_SS_Server", "ConsoleEchoServer\BasicCSharp_SS_Server.csproj", "{5A82C12D-5DA6-4767-9020-36EA7A823B6A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7DA60646-FA87-434F-9812-3FAF7A86D57B}"
+	ProjectSection(SolutionItems) = preProject
+		DependencyGraph.dll = DependencyGraph.dll
+		DependencyGraph.xml = DependencyGraph.xml
+		Formula.dll = Formula.dll
+		Formula.XML = Formula.XML
+		readme.txt = readme.txt
+		StringSocket.dll = StringSocket.dll
+		StringSocket.XML = StringSocket.XML
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
