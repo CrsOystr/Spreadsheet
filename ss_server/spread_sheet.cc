@@ -49,6 +49,7 @@ namespace ss
 
   void spread_sheet::load()
   {
+    //ss_lock.lock();
     string tag, value;
     ifstream ss_file ;
     string file_name  = this->ss_name + ".txt";
@@ -63,6 +64,25 @@ namespace ss
 	  {
 	    getline(ss_file,value);
 	    this->ss_version = atoi(value.c_str());
+	  }
+	if (tag == "<cell>")
+	  {
+	    string cell, content;
+	    getline(ss_file,tag);
+	    if(tag == "<name>")
+		{
+		  getline(ss_file, cell);
+		  getline(ss_file,tag);
+		}
+	    getline(ss_file,tag);
+	    if (tag == "<content>")
+	      {
+		getline(ss_file, content);
+		getline(ss_file,tag);
+	      }
+	    this->ss_map[cell] = content;
+	    getline(ss_file,tag);
+	    getline(ss_file,tag);
 	  }
 	  
 	  
@@ -87,6 +107,7 @@ namespace ss
   
   bool spread_sheet::change(string cell, string cell_content)
   {
+    //this->ss_lock.lock();
     bool valid_change = true;
     if (cell_content[0] == '=')
       {

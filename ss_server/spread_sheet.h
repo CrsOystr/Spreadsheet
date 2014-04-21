@@ -6,6 +6,7 @@
 #include <list>
 #include "depend_graph.h"
 #include <map>
+#include <mutex>
 
 using namespace std;
 using namespace depend;
@@ -21,6 +22,7 @@ namespace ss
     depend_graph ss_dg;
     list<pair<string, string> > ss_changes;
     map<string,string> ss_map;
+    mutex ss_lock;
     
 
 

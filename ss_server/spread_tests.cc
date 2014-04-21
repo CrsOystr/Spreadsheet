@@ -13,6 +13,7 @@ int main()
 
   {
     cout << "TEST ONE" << endl;
+    /*
     spread_sheet name("Funyons", false);
     name.change("B4", "= B5 + 6");
     name.change("B4", " B5 + 6");
@@ -23,7 +24,14 @@ int main()
 
     name.undo();
     name.save();
-    name.load();
+    */
+    spread_sheet name1("Funyons", true);
+    name1.change("H8", "=45");
+    name1.change("H9", "=45");
+    name1.undo();
+    name1.save();
+
+
 
 
   }
