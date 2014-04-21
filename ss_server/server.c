@@ -10,8 +10,7 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <string.h>
-
-#define pass_command = {'P','A','S','S','W','O','R','D'};
+#include <dirent.h>
 
 //struct for a client data type
 //containing a connection ID
@@ -24,8 +23,10 @@ typedef struct
 
 typedef enum { false, true } bool;
 
-bool authentication(char buf[], int);
+const char ESC = '\e';
 
+bool authentication(char buf[], int);
+const char* get_file_list();
 //handles all connected client requests
 void * thread_handle_clients(void *arg)
 {
@@ -46,7 +47,7 @@ void * thread_handle_clients(void *arg)
     //create buffer to store incoming data
     char buf[1024];
     char command[1024];
-    char temp[1024];
+    char *tmp;
     //rb acts as a status code for the current connection
     ssize_t rb = recv(connectionfd, buf, sizeof(buf), 0);
 
@@ -76,41 +77,105 @@ void * thread_handle_clients(void *arg)
 
     bool authen = authentication(buf,k);
     
+
+
     if(authen)
       {	
 	printf("authenticated\n");
+
+
+	//////
+	//
+	//Variables
+	//
+	//////
 	
-	buf[0] = 'P';
-	buf[1] = 'a';
-	buf[2] = 's';
-	buf[3] = 's';
-	buf[4] = 'w';
-	buf[5] = 'o';
-	buf[6] = 'r';
-	buf[7] = 's';
-	buf[8] = ' ';
-	buf[9] = 'A';
-	buf[10] = 'c';
-	buf[11] = 'c';
-	buf[12] = 'e';
-	buf[13] = 'p';
-	buf[14] = 't';
-	buf[15] = 'e';
-	buf[16] = 'd';
-	buf[17] = '\n';
+	char const* const fileName = "filelist.txt";
+	FILE* file;
+	char line[256];
+	char temp[256];
+	char array[256];
+	const char* ret;
+	int i;
+	int last_endline = 0;
+	int current_line = 0;
+	
+
+	//populate with filelist command and ESC
+	temp[0] = 'F';
+	temp[1] = 'I';
+	temp[2] = 'L';
+	temp[3] = 'E';
+	temp[4] = 'L';
+	temp[5] = 'I';
+	temp[6] = 'S';
+	temp[7] = 'T';
+	temp[8] = 27;
 
 	
-	if(-1 == send(connectionfd, buf, rb, 0))
+
+	//open filelist.txt which holds a list of all the spreadsheets
+	file = fopen(fileName, "r");
+	
+	//while there are more lines
+	while(fgets(line, sizeof(line), file))
+	  {
+	    //increment current line variable
+	    current_line++;
+	    //step down current line until new line
+	    for(i = 0; line[i] != '\n'; i++)
+	      {
+		//set temp[8(allow for command)+current_line(for adding in ESC)+last_endline(how far into the array we are)+i]
+		temp[8+current_line+last_endline+i] = line[i];
+	      }
+	    if(line[i] == '\n')
+	      {
+		//ass to last_endline when endline
+		last_endline += i;
+		//add in ESC char
+		temp[8+current_line+last_endline+i] = 27 ;
+	      }
+	    
+	  }	
+
+	//pointer to temp
+	tmp = &temp[0];
+
+	printf(tmp);
+	printf("\n");
+
+	//populate buffer with new string
+	for(i = 0; i < strlen(temp); i++)
+	  {
+	    buf[i] = temp[i];
+	    // printf("buf[%i] = %c , temp[%i] = %c\n",i,buf[i],i,temp[i]);
+	  }
+	
+	//send message and print out status
+	char str[256];
+	sprintf(str,"%d",send(connectionfd, buf, strlen(buf),0));
+	printf(str);
+	printf("   send return\n");
+	/*if(-1 == send(connectionfd, y, strlen(y), 0))
 	  {
 	    perror("Server: thread send failed authenicated");
 	    return NULL;
-	  }
+	    }*/
       }
     else
       {
 	printf("authen failed");
-
-	if(-1 == send(connectionfd, temp, rb, 0))
+	
+	buf[0] = 'I';
+	buf[1] = 'N';
+	buf[2] = 'V';
+	buf[3] = 'A';
+	buf[4] = 'L';
+	buf[5] = 'I';
+	buf[6] = 'D';
+	buf[7] = '\n';
+	
+	if(-1 == send(connectionfd, buf, rb, 0))
 	  {
 	    perror("Server: thread send failed authen failed");
 	    return NULL;
@@ -119,11 +184,11 @@ void * thread_handle_clients(void *arg)
 	      
   
     
-    if(-1 == send(connectionfd,temp, rb, 0))
+    /*if(-1 == send(connectionfd,temp, rb, 0))
       {
 	perror("Server: thread send failed");
 	return NULL;
-      }
+	}*/
 
   }
   
@@ -159,6 +224,17 @@ bool authentication(char buf[], int escseq)
   return authenticated;
       
 }
+
+/*const char* get_file_list()
+{
+ 
+  //ret = malloc(256*sizeof(char));
+
+  ret = &temp[0];
+  printf(ret);
+  printf("BEFORE RETURN\n");
+  return ret;
+  }*/
 
 
 //Entry point for program
