@@ -1,3 +1,6 @@
+// depend_graph.c -- Header file for dependency graph class
+// Written for CS 3505 at the University of Utah by Nicolas Metz
+// meant to be used in conjuction with spreadsheet server project
 
 #ifndef DEPEND_GRAPH_H
 #define DEPEND_GRAPH_H
@@ -5,37 +8,33 @@
 #include <list>
 #include <string>
 
-using namespace std;
-
 namespace depend
 {
-  typedef list< pair<string,string> > listPair;
+  typedef std::list< std::pair<std::string,std::string> > listPair;
   
   class depend_graph
   {
   private:
-    list<pair<string,string> > depend_list;
-    int dependee_size(string cell);
+    std::list<std::pair<std::string,std::string> > depend_list;
+    int dependee_size(std::string cell);
 
   public:
     depend_graph();
     int size();
-    bool circular_check(string start, string name, list<string> visited);
+    bool circular_check(std::string start, std::string name, std::list<std::string> visited);
 
-    bool has_dependents(string cell);
-    bool has_dependees(string cell);
+    bool has_dependents(std::string cell);
+    bool has_dependees(std::string cell);
 
-    list<string> get_dependents(string cell);
-    list<string> get_dependees(string cell);
+    std::list<std::string> get_dependents(std::string cell);
+    std::list<std::string> get_dependees(std::string cell);
 
-    void add_dependency(string dependee, string dependent);
-    void remove_dependency(string dependee, string dependent);
+    void add_dependency(std::string dependee, std::string dependent);
+    void remove_dependency(std::string dependee, std::string dependent);
 
-    void replace_dependents(string cell, list<string> dependents);
-    void replace_dependees(string cell, list<string> dependess);
+    void replace_dependents(std::string cell, std::list<std::string> dependents);
+    void replace_dependees(std::string cell, std::list<std::string> dependess);
   };
-
 }
-
 
 #endif

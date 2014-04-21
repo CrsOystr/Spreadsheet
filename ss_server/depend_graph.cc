@@ -1,6 +1,6 @@
-// Dependency  graph for spreadsheet server
-// THE DEPENDENT DEPENDS ON THE DEPENDEE
-//Parent first,child second order
+// depend_graph.cc -- manages dependencys for our spreadsheet project
+// written for CS3505 at the University of Utah by Nicolas Metz
+// THE DEPENDENT DEPENDS ON THE DEPENDEE -- Parent first,child second order
 
 #include <iostream>
 #include <list>
@@ -23,12 +23,12 @@ namespace depend
   }
 
 
-  bool depend_graph::circular_check(string start, string name, list<string> visited)
+  bool depend_graph::circular_check(std::string start, std::string name, std::list<std::string> visited)
   {
     bool is_circ = false;
     visited.push_back(name);
-    list<string> direct_dependents = this->get_dependents(name);
-    list<string>::iterator iter = direct_dependents.begin();
+    std::list<std::string> direct_dependents = this->get_dependents(name);
+    std::list<std::string>::iterator iter = direct_dependents.begin();
     
     for(;iter != direct_dependents.end(); iter++)
       {
@@ -45,7 +45,7 @@ namespace depend
 
 
   //returns true boolean if the cell is a dependee
-  bool depend_graph::has_dependents(string cell)
+  bool depend_graph::has_dependents(std::string cell)
   {
     bool is_dependee = false;
     listPair::iterator iter = depend_list.begin();
@@ -59,7 +59,7 @@ namespace depend
   }
 
   //returns true boolean if arg cell is a dependent
-  bool depend_graph::has_dependees(string cell)
+  bool depend_graph::has_dependees(std::string cell)
   {
     bool is_dependent = false;
     listPair::iterator iter = depend_list.begin();
@@ -73,9 +73,9 @@ namespace depend
   }
 
   //returns list of all dependents of arg cell
-  list<string> depend_graph::get_dependents(string cell)
+  std::list<std::string> depend_graph::get_dependents(std::string cell)
   {
-    list<string> dependent_list;
+    std::list<std::string> dependent_list;
     listPair::iterator iter = depend_list.begin();
     
     for(;iter != depend_list.end(); iter++)
@@ -89,9 +89,9 @@ namespace depend
   }
 
   //returns list of all dependees of arg cell
-  list<string> depend_graph::get_dependees(string cell)
+  std::list<std::string> depend_graph::get_dependees(std::string cell)
   {
-    list<string> dependee_list;
+    std::list<std::string> dependee_list;
     listPair::iterator iter = depend_list.begin();
     
     for(;iter != depend_list.end(); iter++)
@@ -105,11 +105,10 @@ namespace depend
   }
   
   //adds a dependency to our list with arg cells as dependee and dependent
-  void depend_graph::add_dependency(string dependee, string dependent)
+  void depend_graph::add_dependency(std::string dependee, std::string dependent)
   {
     bool is_dup = false;
-    pair<string, string> depend_pair (dependee, dependent);
-    
+    std::pair<std::string, std::string> depend_pair (dependee, dependent);
     listPair::iterator iter = depend_list.begin();
     
     for(;iter != depend_list.end(); iter++)
@@ -122,7 +121,7 @@ namespace depend
   }
 
    //removes a dependency from our list with arg cells as dependee and dependent
-  void depend_graph::remove_dependency(string dependee, string dependent)
+  void depend_graph::remove_dependency(std::string dependee, std::string dependent)
   {
     listPair::iterator iter = depend_list.begin();
     while(iter != depend_list.end())
@@ -140,13 +139,13 @@ namespace depend
 
 
   //Used to remove all instances wher cell arg is a dependee and adds depency pairs will all dependents in arg list
-  void depend_graph::replace_dependents(string cell, list<string> dependents)
+  void depend_graph::replace_dependents(std::string cell, std::list<std::string> dependents)
   {
     //iterator for dependency list
     listPair::iterator iter = depend_list.begin();
 
     //iterator for input arg
-    list<string>::iterator iter2 = dependents.begin();
+    std::list<std::string>::iterator iter2 = dependents.begin();
 
     //While loop looks through dependency list and removes any pair 
     //where cell is a dependee
@@ -173,13 +172,13 @@ namespace depend
 
 
   //Used to remove all instances wher cell arg is a dependent and adds depency pairs will all dependees in arg list
-  void depend_graph::replace_dependees(string cell, list<string> dependees)
+  void depend_graph::replace_dependees(std::string cell, std::list<std::string> dependees)
   {
     //iterator for dependency list
     listPair::iterator iter = depend_list.begin();
 
     //iterator for input arg
-    list<string>::iterator iter2 = dependees.begin();
+    std::list<std::string>::iterator iter2 = dependees.begin();
 
     //While loop looks through dependency list and removes any pair 
     //where cell is a dependee
@@ -201,7 +200,6 @@ namespace depend
       {
 	this->add_dependency((*iter2),cell);
       }
-  }
-  
+  }  
 }
 

@@ -1,3 +1,6 @@
+// spread_sheet.h -- Header file for spread-sheet class
+// Written for CS 3505 at the University of Utah by Nicolas Metz
+// meant to be used in conjunction with spreadsheet server project
 
 #ifndef SPREAD_SHEET_H
 #define SPREAD_SHEET_H
@@ -8,40 +11,32 @@
 #include <map>
 #include <mutex>
 
-using namespace std;
 using namespace depend;
 
 namespace ss
 {
-  typedef list< pair<string,string> > listPair;
+  typedef std::list< std::pair<std::string,std::string> > listPair;
   
   class spread_sheet
   {
   private:
     int ss_version;
     depend_graph ss_dg;
-    list<pair<string, string> > ss_changes;
-    map<string,string> ss_map;
-    mutex ss_lock;
-    
-
+    std::list<std::pair<std::string, std::string> > ss_changes;
+    std::map<std::string,std::string> ss_map;
+    std::mutex ss_lock;
+    std::string ss_name;
 
   public: 
-    string ss_name;
-    
-    //constructor to start a new spreadsheet with a name
-    spread_sheet(string name, bool exists); 
+    spread_sheet(std::string name, bool exists); //constructor
     
     void save();
     void undo();
     void load();
 
-
     //returns true if valid change, false if not
-    bool change(string cell, string cell_content); 
-
+    bool change(std::string cell, std::string cell_content);
   };
 }
 
-    
 #endif

@@ -1,4 +1,5 @@
-//Spreadsheet class for spreadsheet server
+// spread_sheet.cc -- sreadsheet class for spreadsheet server
+// written for CS3505 at the University of Utah by Nicolas Metz
 // encapsulates all the actions that a spreadsheet can have
 
 #include <iostream>
@@ -10,7 +11,9 @@
 
 namespace ss
 {
-  spread_sheet::spread_sheet(string name, bool exists)
+  //constructor to open ss, bool true denotes it exists
+  //false will create new ss with name instead of load with name
+  spread_sheet::spread_sheet(std::string name, bool exists)
   {
     this->ss_name = name;
 
@@ -26,37 +29,41 @@ namespace ss
   
   void spread_sheet::save()
   {
-    map<string,string> save_map = this->ss_map;
-    ofstream ss_file;
-    string file_name  = this->ss_name + ".txt";
+    //LOck
+    ss_lock.lock();
+    std::map<std::string,std::string> save_map = this->ss_map;
+    std::ofstream ss_file;
+    std::string file_name  = this->ss_name + ".txt";
 
     ss_file.open(file_name.c_str());
-    ss_file << "<spreadsheet>" << endl;
-    ss_file << "<version>" << endl;
-    ss_file << this->ss_version << endl;
-    ss_file << "</version>" << endl;
-    map<string,string>::iterator iter = this->ss_map.begin();
+    ss_file << "<spreadsheet>" << std::endl;
+    ss_file << "<version>" << std::endl;
+    ss_file << this->ss_version << std::endl;
+    ss_file << "</version>" << std::endl;
+    std::map<std::string,std::string>::iterator iter = this->ss_map.begin();
     for(; iter != ss_map.end(); iter++)
       {
-	ss_file << "<cell>" <<endl;
-	ss_file << "<name>" << endl << (*iter).first << endl << "</name>" << endl;
-	ss_file << "<content>" << endl << (*iter).second << endl << "</content>" << endl;
-	ss_file << "</cell>" <<endl;
+	ss_file << "<cell>" << std::endl;
+	ss_file << "<name>" << std::endl << (*iter).first << std::endl << "</name>" << std::endl;
+	ss_file << "<content>" << std::endl << (*iter).second << std::endl << "</content>" << std::endl;
+	ss_file << "</cell>" << std::endl;
       }
-    ss_file << "</spreadsheet>" << endl;
+    ss_file << "</spreadsheet>" << std::endl;
     ss_file.close(); 
+    ss_lock.unlock();
   }
 
   void spread_sheet::load()
   {
-    //ss_lock.lock();
-    string tag, value;
-    ifstream ss_file ;
-    string file_name  = this->ss_name + ".txt";
+    //LOCK
+    ss_lock.lock();
+    std::string tag, value;
+    std::ifstream ss_file ;
+    std::string file_name  = this->ss_name + ".txt";
     ss_file.open(file_name.c_str());
     getline(ss_file,tag);
     if (tag != "<spreadsheet>")
-   	cout << "ERROR READING FILE" << endl;
+   	std::cout << "ERROR READING FILE" << std::endl;
      
     while (getline(ss_file,tag))
       {
@@ -67,7 +74,7 @@ namespace ss
 	  }
 	if (tag == "<cell>")
 	  {
-	    string cell, content;
+	    std::string cell, content;
 	    getline(ss_file,tag);
 	    if(tag == "<name>")
 		{
@@ -83,31 +90,37 @@ namespace ss
 	    this->ss_map[cell] = content;
 	    getline(ss_file,tag);
 	    getline(ss_file,tag);
-	  }
-	  
-	  
+	  } 
       }
+    //UNLOCK
+    ss_lock.unlock();
   }
 
-
-
+  //undo function for spreadsheet, tries to undo last change made to spreadsheet
   void spread_sheet::undo()
   {
+    //LOCK
+    ss_lock.lock();
     bool found_change = false;
     if (this->ss_changes.size()>0)
       {
-	string cell = this->ss_changes.back().first;
-	string cell_contents = this->ss_changes.back().second;
+	std::string cell = this->ss_changes.back().first;
+	std::string cell_contents = this->ss_changes.back().second;
 	this->ss_map[cell]=cell_contents;
 	this->ss_version++;
 	found_change = true;
 	this->ss_changes.pop_back();
-      }    
+      }  
+    //LOCK
+    ss_lock.unlock();  
   }
   
-  bool spread_sheet::change(string cell, string cell_content)
+
+  //spreadsheet change function, tries to determine if the change request is a 
+  //formula, tokenizes it makes sure it valid and adds change to SS
+  bool spread_sheet::change(std::string cell, std::string cell_content)
   {
-    //this->ss_lock.lock();
+    this->ss_lock.lock();
     bool valid_change = true;
     if (cell_content[0] == '=')
       {
@@ -121,13 +134,13 @@ namespace ss
 	    this->ss_dg.add_dependency(cell,iter->str());
 	    
 	    //list used to test for circular dependencys
-	    list<string> t_list;
+	    std::list<std::string> t_list;
 	    //if statement checks for circular dependencies, if circular
 	    //it removes dependencys and this method returns false
 	    if (this->ss_dg.circular_check(cell, cell, t_list))
 	      {
 		valid_change = false;
-		cout << "CIRCULAR" <<endl;
+		std::cout << "CIRCULAR" << std::endl;
 		this->ss_dg.remove_dependency(cell, iter->str());
 	      }
 	  }
@@ -135,27 +148,25 @@ namespace ss
     if (valid_change)
       {
 	//gets a map iterator and tries to see if cell exists in map yet
-	map<string,string>::iterator iter;
+	std::map<std::string,std::string>::iterator iter;
 	iter = ss_map.find(cell);
 	
 	//if the cell exists in map we put the old value in the change log 
 	if(iter!=ss_map.end())
 	  {
-	    this->ss_changes.push_back(pair<string,string>(cell,(*iter).second));
+	    this->ss_changes.push_back(std::pair<std::string,std::string>(cell,(*iter).second));
 	  }
 	//if the cell doesnt exist in map we add a blank string to our changes
 	else
 	  {
-	    this->ss_changes.push_back(pair<string,string>(cell, ""));
+	    this->ss_changes.push_back(std::pair<std::string,std::string>(cell, ""));
 	  }
 	//regardless of whether the cell exists in the map or not this works
 	this->ss_map[cell]=cell_content;
 	this->ss_version++;
       }
     return valid_change;
+    ss_lock.unlock();
   }
- 
-  
-
 }
 
