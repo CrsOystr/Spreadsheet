@@ -45,50 +45,45 @@
             // 
             // IP_textbox
             // 
-            this.IP_textbox.Location = new System.Drawing.Point(140, 39);
-            this.IP_textbox.Margin = new System.Windows.Forms.Padding(4);
+            this.IP_textbox.Location = new System.Drawing.Point(105, 32);
             this.IP_textbox.Name = "IP_textbox";
-            this.IP_textbox.Size = new System.Drawing.Size(179, 22);
+            this.IP_textbox.Size = new System.Drawing.Size(135, 20);
             this.IP_textbox.TabIndex = 0;
-            this.IP_textbox.Text = "127.0.0.1:2500";
+            this.IP_textbox.Text = "155.98.111.64:2500";
             this.IP_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textbox_keyDown);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 9);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(3, 7);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(337, 17);
+            this.label1.Size = new System.Drawing.Size(254, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Please enter in a server IP and password to connect";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(55, 43);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(41, 35);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 17);
+            this.label2.Size = new System.Drawing.Size(58, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "IP Address";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 76);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(12, 62);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(115, 17);
+            this.label3.Size = new System.Drawing.Size(87, 13);
             this.label3.TabIndex = 3;
             this.label3.Text = "Server Password";
             // 
             // PW_textbox
             // 
-            this.PW_textbox.Location = new System.Drawing.Point(140, 73);
-            this.PW_textbox.Margin = new System.Windows.Forms.Padding(4);
+            this.PW_textbox.Location = new System.Drawing.Point(105, 59);
             this.PW_textbox.Name = "PW_textbox";
-            this.PW_textbox.Size = new System.Drawing.Size(179, 22);
+            this.PW_textbox.Size = new System.Drawing.Size(135, 20);
             this.PW_textbox.TabIndex = 4;
             this.PW_textbox.Text = "james";
             this.PW_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textbox_keyDown);
@@ -96,29 +91,26 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(79, 142);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(59, 115);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(52, 17);
+            this.label4.Size = new System.Drawing.Size(40, 13);
             this.label4.TabIndex = 5;
             this.label4.Text = "Status:";
             // 
             // StatusLabel
             // 
             this.StatusLabel.AutoSize = true;
-            this.StatusLabel.Location = new System.Drawing.Point(140, 142);
-            this.StatusLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.StatusLabel.Location = new System.Drawing.Point(105, 115);
             this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(102, 17);
+            this.StatusLabel.Size = new System.Drawing.Size(79, 13);
             this.StatusLabel.TabIndex = 6;
             this.StatusLabel.Text = "Not Connected";
             // 
             // ServerButton
             // 
-            this.ServerButton.Location = new System.Drawing.Point(140, 106);
-            this.ServerButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ServerButton.Location = new System.Drawing.Point(105, 86);
             this.ServerButton.Name = "ServerButton";
-            this.ServerButton.Size = new System.Drawing.Size(180, 28);
+            this.ServerButton.Size = new System.Drawing.Size(135, 23);
             this.ServerButton.TabIndex = 7;
             this.ServerButton.Text = "Connect";
             this.ServerButton.UseVisualStyleBackColor = true;
@@ -127,21 +119,20 @@
             // ssListBox
             // 
             this.ssListBox.FormattingEnabled = true;
-            this.ssListBox.ItemHeight = 16;
             this.ssListBox.Items.AddRange(new object[] {
             " "});
-            this.ssListBox.Location = new System.Drawing.Point(12, 22);
-            this.ssListBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ssListBox.Location = new System.Drawing.Point(9, 18);
             this.ssListBox.Name = "ssListBox";
-            this.ssListBox.Size = new System.Drawing.Size(301, 260);
+            this.ssListBox.Size = new System.Drawing.Size(227, 212);
             this.ssListBox.TabIndex = 8;
             this.ssListBox.DoubleClick += new System.EventHandler(this.ssListBox_DoubleClick);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(238, 289);
+            this.button1.Location = new System.Drawing.Point(178, 235);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(56, 19);
             this.button1.TabIndex = 9;
             this.button1.Text = "Create";
             this.button1.UseVisualStyleBackColor = true;
@@ -149,9 +140,10 @@
             // 
             // newSpreadsheet_textBox
             // 
-            this.newSpreadsheet_textBox.Location = new System.Drawing.Point(12, 289);
+            this.newSpreadsheet_textBox.Location = new System.Drawing.Point(9, 235);
+            this.newSpreadsheet_textBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.newSpreadsheet_textBox.Name = "newSpreadsheet_textBox";
-            this.newSpreadsheet_textBox.Size = new System.Drawing.Size(220, 22);
+            this.newSpreadsheet_textBox.Size = new System.Drawing.Size(166, 20);
             this.newSpreadsheet_textBox.TabIndex = 10;
             this.newSpreadsheet_textBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.newSpreadsheet_textBox_KeyDown);
             // 
@@ -160,17 +152,19 @@
             this.groupBox_connected.Controls.Add(this.ssListBox);
             this.groupBox_connected.Controls.Add(this.newSpreadsheet_textBox);
             this.groupBox_connected.Controls.Add(this.button1);
-            this.groupBox_connected.Location = new System.Drawing.Point(7, 172);
+            this.groupBox_connected.Location = new System.Drawing.Point(5, 140);
+            this.groupBox_connected.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox_connected.Name = "groupBox_connected";
-            this.groupBox_connected.Size = new System.Drawing.Size(327, 325);
+            this.groupBox_connected.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox_connected.Size = new System.Drawing.Size(245, 264);
             this.groupBox_connected.TabIndex = 11;
             this.groupBox_connected.TabStop = false;
             // 
             // Login
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(347, 506);
+            this.ClientSize = new System.Drawing.Size(260, 411);
             this.Controls.Add(this.groupBox_connected);
             this.Controls.Add(this.ServerButton);
             this.Controls.Add(this.StatusLabel);
@@ -181,7 +175,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.IP_textbox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "Login";
             this.Text = "Login to server";

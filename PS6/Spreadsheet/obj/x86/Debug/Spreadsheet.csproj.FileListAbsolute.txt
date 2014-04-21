@@ -10,3 +10,15 @@ C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\StringS
 C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.dll
 C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.pdb
 C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.csprojResolveAssemblyReference.cache
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Spreadsheet.dll
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Spreadsheet.pdb
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Spreadsheet.XML
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\DependencyGraph.dll
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Formula.dll
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\StringSocket.dll
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\DependencyGraph.xml
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Formula.xml
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\StringSocket.xml
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.csprojResolveAssemblyReference.cache
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.dll
+C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.pdb

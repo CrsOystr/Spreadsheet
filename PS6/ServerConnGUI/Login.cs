@@ -218,7 +218,7 @@ namespace ServerConnGUI
             }
             else if (split[0] == "INVALID") //Password was rejected
             {
-                //Simply disconnect form the server
+                //Simply disconnect from the server
                 manualDisconnect();
                 //set the custom status
                 SafeGuiChange(() =>
