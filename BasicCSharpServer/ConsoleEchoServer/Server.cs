@@ -130,7 +130,25 @@ namespace ConsoleEchoServer
             "taxes"
         });
 
+        string[,] setOne = new string[,]
+        {
+            {"A1","1"},
+            {"B1","2"},
+            {"C1","3"},
+            {"D1","4"},
+            {"E1","5"}
+        };
 
+        string[,] setTwo = new string[,]
+        {
+            {"A1","= 1"},
+            {"A2","= A1"},
+            {"A3","= A1 + A2"},
+            {"A4","= A3 + B1"},
+            {"A5","word!"}
+        };
+
+        int version_number = 0;
 
         public void processMessage(NetworkStream clientStream, string received)
         {
@@ -157,11 +175,13 @@ namespace ConsoleEchoServer
             }
             else if (split[0] == "OPEN")
             {
-                respond = "ERROR" + ESC + "Not implemented yet";
+                respond = "UPDATE" + ESC + version_number;
+                foreach(string s in setOne)
+                    respond += ESC + s;
             }
             else if (split[0] == "CREATE")
             {
-                respond = "ERROR" + ESC + "Not implemented yet";
+                respond = "UPDATE" + ESC + version_number;
             }
             else if (split[0] == "ENTER")
             {

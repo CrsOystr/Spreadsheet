@@ -52,7 +52,7 @@
             this.spreadsheetPanel1.Location = new System.Drawing.Point(0, 44);
             this.spreadsheetPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
-            this.spreadsheetPanel1.Size = new System.Drawing.Size(1024, 506);
+            this.spreadsheetPanel1.Size = new System.Drawing.Size(629, 260);
             this.spreadsheetPanel1.TabIndex = 0;
             // 
             // menuStrip
@@ -64,7 +64,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 6);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(199, 28);
+            this.menuStrip.Size = new System.Drawing.Size(107, 28);
             this.menuStrip.TabIndex = 3;
             this.menuStrip.Text = "menuStrip2";
             // 
@@ -106,7 +106,7 @@
             this.controlPanel.Location = new System.Drawing.Point(0, 0);
             this.controlPanel.Margin = new System.Windows.Forms.Padding(4);
             this.controlPanel.Name = "controlPanel";
-            this.controlPanel.Size = new System.Drawing.Size(1024, 44);
+            this.controlPanel.Size = new System.Drawing.Size(629, 44);
             this.controlPanel.TabIndex = 5;
             // 
             // selectedCellInfoPanel
@@ -184,7 +184,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
-            this.ClientSize = new System.Drawing.Size(1024, 550);
+            this.ClientSize = new System.Drawing.Size(629, 304);
             this.Controls.Add(this.spreadsheetPanel1);
             this.Controls.Add(this.controlPanel);
             this.Margin = new System.Windows.Forms.Padding(4);

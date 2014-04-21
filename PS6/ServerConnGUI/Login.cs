@@ -125,7 +125,7 @@ namespace ServerConnGUI
             else
             {
                 SetConnectionState(state.lostConnection);
-                MessageBox.Show("Lost connection");
+                //MessageBox.Show("Lost connection"); //don't really need
             }
             expectingDisconnect = false;
         }
@@ -426,6 +426,7 @@ namespace ServerConnGUI
             {
                 //opens an new spreadsheet gui which takes over the connection
                 new SpreadsheetGUIForm(connection, selectedSpreadsheetName, false).Show();
+                connection = null;
 
                 //Make a new connection with ther server
                 ServerButton_Click(null, null);
@@ -452,17 +453,27 @@ namespace ServerConnGUI
         //called when we want to create a new spreadsheet
         private void button1_Click(object sender, EventArgs e)
         {
+            string problem = null;
             //Make sure the spreadsheet name is valid
-            if (newSpreadsheet_textBox.Text == "" || newSpreadsheet_textBox.Text.Contains('.'))
-            {
+            if (newSpreadsheet_textBox.Text == "")
+                problem = "Must enter a name.";
+            else if (newSpreadsheet_textBox.Text.Contains('.'))
+                problem = "Name cannot have any periods.";
+            else if (newSpreadsheet_textBox.Text.Contains(ConnectionLiaison.DEFAULT_ESC))
+                problem = "Name cannot contain the special separator character.";
+            else if (newSpreadsheet_textBox.Text.Contains('\n'))
+                problem = "Name cannot contain any new line characters";
+
+            //Check if there was a problem with the spreadsheet name
+            if (problem != null)
                 MessageBox.Show("Invalid Spreadsheet name");
-            }
             else //open a spreadsheet gui and tell it to request a new spreadsheet from the server
             {
                 //opens an new spreadsheet gui which takes over the connection
                 lock (connection.GagLock)
                 {
                     new SpreadsheetGUIForm(connection, newSpreadsheet_textBox.Text, true).Show();
+                    connection = null;
                 }
 
                 newSpreadsheet_textBox.Text = "";

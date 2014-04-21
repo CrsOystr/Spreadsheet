@@ -102,7 +102,7 @@ namespace SS
         /// <param name="pw"></param>
         public void sendPassword(string pw)
         {
-            this.SendMessage("PASSWORD" + ESC + pw, callBack); //TODO what if fail?
+            this.SendMessage("PASSWORD" + ESC + pw, callBack);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace SS
         /// <param name="spreadsheetName"></param>
         public void sendOpen(string spreadsheetName)
         {
-
+            this.SendMessage("OPEN" + ESC + spreadsheetName, callBack);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace SS
         /// <param name="spreadsheetname"></param>
         public void sendCreate(string spreadsheetname)
         {
-
+            this.SendMessage("CREATE" + ESC + spreadsheetname, callBack);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace SS
         /// <param name="cellContent"></param>
         public void sendEnter(int versionNumber, string cellName, string cellContent)
         {
-
+            this.SendMessage("CREATE" + ESC + versionNumber + ESC + cellName + ESC + cellContent, callBack);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace SS
         /// </summary>
         public void sendResync()
         {
-
+            this.SendMessage("RESYNC", callBack);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace SS
         /// <param name="versionNumber"></param>
         public void sendUndo(int versionNumber)
         {
-
+            this.SendMessage("UNDO" + ESC + versionNumber, callBack);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace SS
         /// <param name="versionNumber"></param>
         public void sendSave(int versionNumber)
         {
-
+            this.SendMessage("SAVE" + ESC + versionNumber, callBack);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace SS
         /// </summary>
         public void sendDisconnect()
         {
-
+            this.SendMessage("DISCONNECT", callBack);
         }
 
 

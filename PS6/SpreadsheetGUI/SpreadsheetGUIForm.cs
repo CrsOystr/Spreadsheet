@@ -18,12 +18,30 @@ namespace SpreadsheetGUI
 
     public partial class SpreadsheetGUIForm : Form
     {
-
+        /// <summary>
+        /// Holds and manages the connection with the server
+        /// </summary>
         ConnectionLiaison connection;
+
+        /// <summary>
+        /// Another form used to display information while the spreadsheet is loading.
+        /// </summary>
         LoadingBox loadingBox;
+        /// <summary>
+        /// Used for the first time the spreadsheet gui is opened
+        /// </summary>
         bool firstShown = true;
+
+        /// <summary>
+        /// Determines whether to use OPEN or CREATE the first time this spreadsheet is opened.
+        /// </summary>
         bool requestedNewSpreadsheet;
 
+        /// <summary>
+        /// This number respesents the version number the client believes the spreadsheet is on. 
+        /// -1 means the number has not been set yet.
+        /// </summary>
+        int version_number = -1;
 
         #region Initializing stuff
 
@@ -38,52 +56,23 @@ namespace SpreadsheetGUI
         Spreadsheet ss;
 
 
+        private string _spreadsheetName;
         /// <summary>
-        /// Private variable only used by fileName.
+        /// Constains the name of the spreadsheet
         /// </summary>
-        private string _fileName;
-
-        /// <summary>
-        /// Contains the path to the current file that 
-        /// is loaded in the spreadsheet. Defaults to
-        /// "\Untitled.ss" with a new spreadsheet.
-        /// </summary>
-        private string fileName
+        private string spreadsheetName
         {
             get
             {
-                return _fileName;
-            }
-            set
-            {
-                _fileName = value;
-                //extract the short file name
-                shortFileName = Path.GetFileName(value);
-            }
-        }
-
-
-        /// <summary>
-        /// private variable used only by shortFileName
-        /// </summary>
-        private string _shortFileName;
-
-        /// <summary>
-        /// Only contains the file name, not the path to the file.
-        /// When set, this updates the title of the form as well.
-        /// </summary>
-        private string shortFileName
-        {
-            get
-            {
-                return _shortFileName;
+                return _spreadsheetName;
             }
             set
             {
                 this.Text = " " + value + "  -  Spreadsheet";
-                _shortFileName = value;
+                _spreadsheetName = value;
             }
         }
+
 
         /// <summary>
         /// The version which all loaded spreadsheets must be
@@ -100,7 +89,7 @@ namespace SpreadsheetGUI
             this.requestedNewSpreadsheet = requestNewSpreadsheet;
 
             initialize();
-            this.fileName = SpreadsheetName;
+            this.spreadsheetName = SpreadsheetName;
 
             //Take over the connection with the server
             this.connection = Connection;
@@ -147,7 +136,7 @@ namespace SpreadsheetGUI
 
             //set initial fileName (including path)
             //fileName = Directory.GetCurrentDirectory() + @"\Untitled.ss";
-            fileName = "";
+            //fileName = "";
 
             //clear the GUI cells
             spreadsheetPanel1.Clear();
@@ -180,28 +169,24 @@ namespace SpreadsheetGUI
         /// the loading box and show the spreadsheet.
         /// </summary>
         /// <param name="ssName"></param>
-        public void loadSpreadsheetFromServer()
+        public void askServerForFirstSpreadsheet()
         {
             //Show the loading box
             loadingBox = new LoadingBox(this);
             loadingBox.Show();
 
             ThreadPool.QueueUserWorkItem((o) =>
+            {
+                //Make the appropriate request to the server
+                if (requestedNewSpreadsheet)
                 {
-                    if (requestedNewSpreadsheet)
-                    {
-
-                    }
-                    else
-                    {
-                        // ** TODO  load the spreadsheet from the server using the ConnectionLiaison
-                        Thread.Sleep(2000); //simulate a load
-                        // **
-
-                        //
-                    }
-                    doneLoading();
-                });
+                    connection.sendCreate(spreadsheetName);
+                }
+                else
+                {
+                    connection.sendOpen(spreadsheetName);
+                }
+            });
         }
 
         /// <summary>
@@ -227,7 +212,11 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void CalledWhenDisconnected(SocketConnection sc, Exception e)
         {
-            //** TODO
+            MessageBox.Show("Error on spreadsheet \""+spreadsheetName+"\": \n - Lost connection with server.");
+            SafeGuiChange(() =>
+                {
+                    Close();
+                });
         }
 
         /// <summary>
@@ -252,11 +241,36 @@ namespace SpreadsheetGUI
             //Decide what to do with the message received
             if (split[0] == "UPDATE")
             {
+                //first check version number
+                int givenVersion = 0;
+                if (!int.TryParse(split[1], out givenVersion))
+                {
+                    MessageBox.Show("Error: Could not parse version number from update");
+                    return;
+                }
+
+                //If we do not have a verson number stored yet, just take theirs
+                if (version_number < 0)
+                    version_number = givenVersion;
+                else //verify it's the version we expect
+                {
+                    //if the given version is not one more than the version we have
+                    if (++version_number != givenVersion)
+                    {
+                        //Then we need to resync
+                        //TODO
+
+                    }
+                }
+
                 SafeGuiChange(() =>
                 {
-                    //** TODO
-                    MessageBox.Show("UPDATE!"); //Technically, MessageBox doesn't need to use SafeGuiChange.
+                    //Grab the cell stuff and put it into the spreadsheet
+                    //TODO
 
+
+                    //Let the speadsheet open when we're done loading
+                    doneLoading();
                 });
             }
             else if (split[0] == "SAVED")
@@ -343,7 +357,7 @@ namespace SpreadsheetGUI
             if (firstShown)
             {
                 firstShown = false;
-                loadSpreadsheetFromServer();
+                askServerForFirstSpreadsheet();
             }
         }
 
