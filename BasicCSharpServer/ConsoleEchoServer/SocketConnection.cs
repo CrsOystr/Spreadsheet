@@ -1,4 +1,10 @@
-﻿using CustomNetworking;
+﻿/* 
+ * 
+ * Jason Steck
+ * Created: Fall'13, Updated: Spring'14
+ */
+
+using CustomNetworking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +48,7 @@ namespace SS
         /// <summary>
         /// Constructor without an existing socket connection.
         /// </summary>
+        /// <param name="sock">The underlying connection used for communication.</param>
         /// <param name="whenMessageIsReceived">Function that is called when a message is received</param>
         /// <param name="whenDisconnected">Event called when the connection is lost.</param>
         public SocketConnection(Action<SocketConnection, Exception> whenDisconnected, Action<MessageReceivedFrom> whenMessageIsReceived)

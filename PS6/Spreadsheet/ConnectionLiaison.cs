@@ -22,13 +22,20 @@ namespace SS
             private set;
         }
 
+        /// <summary>
+        /// Describes the port this connection is using/will use
+        /// </summary>
         public int port
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Describes the default port this class will use, unless otherwise specified
+        /// </summary>
         public const int DEFAULT_PORT = 2500;
+
         /// <summary>
         /// Represents the delimiter used for parsing communications between the Spreadsheet 
         /// client and server. This value can adapt if the server is using a different separation character (singular)
@@ -40,23 +47,27 @@ namespace SS
         /// </summary>
         public const char DEFAULT_ESC = '\u001B';
 
-        //*variables to be used
-        private bool authenticated = false;
-
+        /// <summary>
+        /// Method to call when sending something fails
+        /// </summary>
+        public Action<Exception, Object> callBack;
 
         /// <summary>
-        /// 
+        /// Basic constructor for a connection liaison. This will not start a connection.
         /// </summary>
         /// <param name="whenDisconnected"></param>
         /// <param name="whenMessageIsReceived"></param>
-        public ConnectionLiaison(Action<SocketConnection, Exception> whenDisconnected, Action<MessageReceivedFrom> whenMessageIsReceived):base(whenDisconnected,whenMessageIsReceived)
+        /// <param name="whenSendingFails"></param>
+        public ConnectionLiaison(Action<SocketConnection, Exception> whenDisconnected, Action<MessageReceivedFrom> whenMessageIsReceived, Action<Exception,Object> whenSendingFails):base(whenDisconnected,whenMessageIsReceived)
         {
+            this.callBack = whenSendingFails;
             ESC = DEFAULT_ESC;
         }
 
         /// <summary>
         /// Attempts to connect to the specified server
         /// </summary>
+        /// <param name="server">the server address (hostname+":"+port) to which you want to connect</param>
         /// <param name="successfulConnect">Called if we successfully connect to the server</param>
         /// <param name="failedToConnect">Called if unable to connect to server at all.</param>
         public void tryToConnect(string server, Action successfulConnect, Action<string> failedToConnect)
@@ -85,12 +96,80 @@ namespace SS
             this.TCPConnect(hostname, port, 2, successfulConnect, failedToConnect);
         }
 
-
+        /// <summary>
+        /// used to send the password
+        /// </summary>
+        /// <param name="pw"></param>
         public void sendPassword(string pw)
         {
-            this.SendMessage("PASSWORD" + ESC + pw, null); //TODO what if fail?
+            this.SendMessage("PASSWORD" + ESC + pw, callBack); //TODO what if fail?
         }
 
+        /// <summary>
+        /// Used to request a spreadsheet be opened
+        /// </summary>
+        /// <param name="spreadsheetName"></param>
+        public void sendOpen(string spreadsheetName)
+        {
+
+        }
+
+        /// <summary>
+        /// used to request a spreadsheet be created and opened
+        /// </summary>
+        /// <param name="spreadsheetname"></param>
+        public void sendCreate(string spreadsheetname)
+        {
+
+        }
+
+        /// <summary>
+        /// used to request a change to the official spreadsheet
+        /// </summary>
+        /// <param name="versionNumber"></param>
+        /// <param name="cellName"></param>
+        /// <param name="cellContent"></param>
+        public void sendEnter(int versionNumber, string cellName, string cellContent)
+        {
+
+        }
+
+        /// <summary>
+        /// Used to ask for the entire spreadsheet again
+        /// </summary>
+        public void sendResync()
+        {
+
+        }
+
+        /// <summary>
+        /// used to request an undo on the spreadsheet
+        /// </summary>
+        /// <param name="versionNumber"></param>
+        public void sendUndo(int versionNumber)
+        {
+
+        }
+
+        /// <summary>
+        /// Used to request the official spreadsheet be saved
+        /// </summary>
+        /// <param name="versionNumber"></param>
+        public void sendSave(int versionNumber)
+        {
+
+        }
+
+        /// <summary>
+        /// used to request that the server disconnect. (?)
+        /// </summary>
+        public void sendDisconnect()
+        {
+
+        }
+
+
+        
 
         // ** TODO  Create more methods like the sendPassword that the Spreadsheet can use
 

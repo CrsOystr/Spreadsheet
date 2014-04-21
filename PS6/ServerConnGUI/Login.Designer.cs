@@ -50,7 +50,7 @@
             this.IP_textbox.Name = "IP_textbox";
             this.IP_textbox.Size = new System.Drawing.Size(179, 22);
             this.IP_textbox.TabIndex = 0;
-            this.IP_textbox.Text = "127.0.0.1:3000";
+            this.IP_textbox.Text = "127.0.0.1:2500";
             this.IP_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textbox_keyDown);
             // 
             // label1

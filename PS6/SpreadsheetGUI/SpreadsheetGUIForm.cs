@@ -22,6 +22,8 @@ namespace SpreadsheetGUI
         ConnectionLiaison connection;
         LoadingBox loadingBox;
         bool firstShown = true;
+        bool requestedNewSpreadsheet;
+
 
         #region Initializing stuff
 
@@ -35,12 +37,6 @@ namespace SpreadsheetGUI
         /// </summary>
         Spreadsheet ss;
 
-        /// <summary>
-        /// If the spreadsheet was loaded from a file or if
-        /// the spreadsheet has been saved to a file then
-        /// hasFileReference will be true. Otherwise, false.
-        /// </summary>
-        bool hasFileReference = false;
 
         /// <summary>
         /// Private variable only used by fileName.
@@ -101,39 +97,19 @@ namespace SpreadsheetGUI
         /// </summary>
         public SpreadsheetGUIForm(ConnectionLiaison Connection, string SpreadsheetName, bool requestNewSpreadsheet)
         {
-            //TODO deal with requestNewSpreadsheet variable
+            this.requestedNewSpreadsheet = requestNewSpreadsheet;
 
             initialize();
             this.fileName = SpreadsheetName;
 
             //Take over the connection with the server
-            lock (Connection.GagLock)
-            {
-                this.connection = Connection;
-                this.connection.setDirectOutputTo(CalledWhenDisconnected, receivedSomething);
-            }
+            this.connection = Connection;
+            this.connection.setDirectOutputTo(CalledWhenDisconnected, receivedSomething);
+            this.connection.callBack = callWithSendingResults;
 
             //Initially the form is disabled until it has loaded all the cell data
             this.Enabled = false;
         }
-
-        /* Disabled for CollaborativeSpreadsheet
-        /// <summary>
-        /// Brings up the open file dialog if loadFile is true.
-        /// If they cancel the load or the file fails to load then
-        /// the form does not open.
-        /// </summary>
-        /// <param name="loadFile"></param>
-        public SpreadsheetGUIForm(bool loadFile)
-        {
-            //initialize form
-            initialize();
-            //check if they want to load the file
-            if (loadFile)
-                if (!openDialogAction()) //show the open form dialog
-                    Close(); //if it doesn't load for some reason, then close this form.
-        }
-         * //*/
 
         /// <summary>
         /// initializes all components on creation.
@@ -153,7 +129,6 @@ namespace SpreadsheetGUI
         //Stuff to do after form loads
         private void SpreadsheetGUIForm_Load(object sender, EventArgs e)
         {
-
             //put focus on content textbox
             this.ActiveControl = this.contentTextBox;
         }
@@ -165,20 +140,20 @@ namespace SpreadsheetGUI
         {
             //clear the textbox
             contentTextBox.Text = "";
-            this.ActiveControl = null;
+            //this.ActiveControl = null;  //TODO why was this here?
 
             //create a blank spreadsheet
             ss = new Spreadsheet(isValid, normalize, versionType);
 
             //set initial fileName (including path)
-            fileName = Directory.GetCurrentDirectory() + @"\Untitled.ss";
+            //fileName = Directory.GetCurrentDirectory() + @"\Untitled.ss";
+            fileName = "";
 
             //clear the GUI cells
             spreadsheetPanel1.Clear();
 
             //set first selection to A1 (0,0)
             spreadsheetPanel1.SetSelection(0, 0);
-
         }
 
         /// <summary>
@@ -205,7 +180,7 @@ namespace SpreadsheetGUI
         /// the loading box and show the spreadsheet.
         /// </summary>
         /// <param name="ssName"></param>
-        public void loadSpreadsheet()
+        public void loadSpreadsheetFromServer()
         {
             //Show the loading box
             loadingBox = new LoadingBox(this);
@@ -213,11 +188,18 @@ namespace SpreadsheetGUI
 
             ThreadPool.QueueUserWorkItem((o) =>
                 {
-                    // ** TODO  load the spreadsheet from the server using the ConnectionLiaison
-                    Thread.Sleep(2000); //simulate a load
-                    // **
+                    if (requestedNewSpreadsheet)
+                    {
 
-                    //
+                    }
+                    else
+                    {
+                        // ** TODO  load the spreadsheet from the server using the ConnectionLiaison
+                        Thread.Sleep(2000); //simulate a load
+                        // **
+
+                        //
+                    }
                     doneLoading();
                 });
         }
@@ -315,14 +297,70 @@ namespace SpreadsheetGUI
         }
 
 
+        /// <summary>
+        /// Attempts to add the contents of the content box to the spreadsheet
+        /// </summary>
+        private void processContentTextBox()
+        {
+            //TODO convert to our needs
+
+            //Validate content and update values/grid
+            try
+            {
+                updateGUICells(ss.SetContentsOfCell(this.CellName.Text, this.contentTextBox.Text));
+            }
+            catch (Exception ex)
+            {
+                //If you run into an exception, then display it
+                MessageBox.Show("Error:" + ex.Message);
+            }
+            finally
+            {
+                //make sure the ssPanel display is set correctly
+                //update cell info panel
+                displaySelection(spreadsheetPanel1);
+            }
+        }
+
+        //checks if it already has a fileReference, if not then do the same thing as "Save As.."
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveFileAction();
+        }
+
+        /// <summary>
+        /// Initiates the Save file action (same as Ctrl+S)
+        /// </summary>
+        private void saveFileAction()
+        {
+            //TODO
+        }
 
 
+        private void SpreadsheetGUIForm_Shown(object sender, EventArgs e)
+        {
+            //When the spreadsheet is shown 
+            if (firstShown)
+            {
+                firstShown = false;
+                loadSpreadsheetFromServer();
+            }
+        }
 
-
+        /// <summary>
+        /// Called when we have the results from sending a message (not the response from the server, 
+        /// but rather, if the message made it to it's destination all right).
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="o"></param>
+        public void callWithSendingResults(Exception e, Object o)
+        {
+            if (e != null)
+                MessageBox.Show("Failed to send message:" + o.ToString() + "\nError:" + e.Message);
+        }
 
         //----------  Original Spreadsheet stuff (mostly) -----
-
-
+        #region Original GUI methods
 
         /// <summary>
         /// Updates the display (mainly the cell info) when a cell is clicked
@@ -369,28 +407,6 @@ namespace SpreadsheetGUI
         }
 
 
-        /// <summary>
-        /// Attempts to add the contents of the content box to the spreadsheet
-        /// </summary>
-        private void processContentTextBox()
-        {
-            //Validate content and update values/grid
-            try
-            {
-                updateGUICells(ss.SetContentsOfCell(this.CellName.Text, this.contentTextBox.Text));
-            }
-            catch (Exception ex)
-            {
-                //If you run into an exception, then display it
-                MessageBox.Show("Error:" + ex.Message);
-            }
-            finally
-            {
-                //make sure the ssPanel display is set correctly
-                //update cell info panel
-                displaySelection(spreadsheetPanel1);
-            }
-        }
 
         /// <summary>
         /// Updates the visuals of all the cells listed.
@@ -410,20 +426,6 @@ namespace SpreadsheetGUI
 
             //Make sure cell info is updated as well
             displaySelection(spreadsheetPanel1);
-        }
-
-        // Deals with the New menu
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            newSpreadsheetAction();
-        }
-
-        private void newSpreadsheetAction()
-        {
-            // Tell the application context to run the form on the same
-            // thread as the other forms.
-            /* Disabled for SS Collaboration Project */
-            //SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUIForm());
         }
 
 
@@ -448,11 +450,8 @@ namespace SpreadsheetGUI
                                         "  ¬ To edit a cell, simply have the desired cell selected and begin" + "\n" +
                                         "    typing. To save the contents you must press \"Enter\"." + "\n\n" +
                                         "  ¬ Here are some more keyboard shortcuts:" + "\n" +
-                                        "      Ctrl+N   :   Opens a new spreadsheet in a new window." + "\n" +
-                                        "      Ctrl+O   :   Opens an existing file in this same spreadsheet." + "\n" +
                                         "      Ctrl+S   :   Quickly saves the current spreadsheet to a file." + "\n" +
-                                        "      Alt+F4   :   Closes the current spreadsheet." + "\n\n" +
-                                        "    For more file options, check out the \"File\" menu left of the Help button" + "\n";
+                                        "      Alt+F4   :   Closes the current spreadsheet." + "\n";
             MessageBox.Show(helpMessage, "Instructions");
         }
 
@@ -603,152 +602,6 @@ namespace SpreadsheetGUI
                 return preValue.ToString();
         }
 
-        //Opens a dialog window for user to select file to load into spreadsheet
-        private void openToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            openDialogAction();
-            //check if load succeeded
-            //if (!openDialogAction())
-            //{
-            //if load failed then clear the spreadsheet
-            //    clearAll();
-            //}
-        }
-
-
-        /// <summary>
-        /// Shows the Open File Dialog for user to choose a file
-        /// to open.
-        /// </summary>
-        /// <returns>True if user selected a file and it loaded correctly.</returns>
-        private bool openDialogAction()
-        {
-            OpenFileDialog of = new OpenFileDialog();
-
-            // Set filter options and filter index.
-            of.Filter = "Spreadsheet Files|*.ss|All Files (*.*)|*.*";
-            of.FilterIndex = 1;
-
-            // Call the ShowDialog method to show the dialog box.
-            // and check if they selected a document
-            if (of.ShowDialog().ToString() == "OK") // or "Cancel"
-            {
-                //Check if current version has been saved or not
-                if (ss.Changed)
-                    //Ask if they want to continue without saving.
-                    if (!areYouSure())
-                        return false; //if they say no then stop.
-
-                //otherwise, continue loading:
-
-                //try to Load the new file
-                try
-                {
-                    //Get a list of the old cells to wipe
-                    IEnumerable<string> oldCellsToWipe = ss.GetNamesOfAllNonemptyCells();
-
-                    //load the new spreadsheet data (might throw an error)
-                    ss = new Spreadsheet(of.FileName, isValid, normalize, versionType);
-
-                    //save the FileName
-                    fileName = of.FileName;
-
-                    //update the GUI's cells
-                    updateGUICells(new HashSet<string>(ss.GetNamesOfAllNonemptyCells().Concat(oldCellsToWipe)));
-
-                    //since we loaded from a file, our current spreadsheet has an actual file on the computer
-                    hasFileReference = true;
-
-                    //File sucessfully loaded
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    //Show the message why it could not load
-                    MessageBox.Show("Error Loading File: " + ex.Message + ".");
-
-                    this.clearAll();
-                    //Did not load
-                    return false;
-                }
-
-            }
-            //else they cancelled, so do nothing
-            return false;
-        }
-
-        //checks if it already has a fileReference, if not then do the same thing as "Save As.."
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            saveFileAction();
-        }
-
-        /// <summary>
-        /// Initiates the Save file action (same as Ctrl+S)
-        /// </summary>
-        private void saveFileAction()
-        {
-            if (hasFileReference)
-            {
-                //save the file without opening dialog
-                saveFile(this.fileName);
-            }
-            else
-            {
-                //open a new dialog to select where to save the file
-                saveFile();
-            }
-        }
-
-        //Forces the OpenFileDialog to select where to save a file
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //Save file with dialog
-            saveFile();
-        }
-
-        //Opens a saveFile Dilog and passes path to saveFile(string fileLocation)
-        private void saveFile()
-        {
-            //Create dialog object
-            SaveFileDialog sf = new SaveFileDialog();
-            //Set filter options
-            sf.Filter = "Spreadsheet Files|*.ss|All Files (*.*)|*.*";
-            sf.FilterIndex = 1;
-
-            //sets the default filename if it already has one
-            if (hasFileReference)
-            {
-                //set the current directory
-                sf.InitialDirectory = Path.GetDirectoryName(fileName);
-                //set the default file name
-                sf.FileName = this.shortFileName;
-            }
-            //only continue if they press "OK"
-            if (sf.ShowDialog().ToString() == "OK")
-            {
-                saveFile(sf.FileName);
-            }
-        }
-
-        //Saves data to the specified fileLocation (which includes the name)
-        private void saveFile(string fileLocation)
-        {
-            try
-            {
-                //save the spreadsheet to a file
-                ss.Save(fileLocation);
-                //Update the current file
-                fileName = fileLocation;
-                //Saved file successfully
-                hasFileReference = true;
-            }
-            catch (Exception ex)
-            {
-                //Display why the Save didn't work
-                MessageBox.Show(ex.Message);
-            }
-        }
 
         //If there have been unsaved changed, make sure the user wants to close
         private void SpreadsheetGUIForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -773,22 +626,7 @@ namespace SpreadsheetGUI
             return result == DialogResult.Yes;
         }
 
-        //Creates a new spreadsheet and tells it to immediately open a new dialog
-        private void openInNewWindowToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            /*  Disabled for SS Colaboration Project 
-            SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUIForm(true));//*/
-        }
-
-        private void SpreadsheetGUIForm_Shown(object sender, EventArgs e)
-        {
-            //When the spreadsheet is shown 
-            if (firstShown)
-            {
-                firstShown = false;
-                loadSpreadsheet();
-            }
-        }
+        #endregion
 
     }
 }

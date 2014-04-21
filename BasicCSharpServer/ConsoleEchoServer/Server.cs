@@ -27,6 +27,9 @@ namespace ConsoleEchoServer
         //*/
 
         #region Server Stuff
+        bool DISPLAY = true;
+
+
         public Server(int port)
         {
             this.tcpListener = new TcpListener(IPAddress.Any, port);
@@ -103,28 +106,38 @@ namespace ConsoleEchoServer
             tcpClient.Close();
         }
 
+        /// <summary>
+        /// Displays the string to the console if the DISPLAY boolean is set.
+        /// </summary>
+        /// <param name="s"></param>
+        public void d(string s)
+        {
+            if(DISPLAY)
+                Console.WriteLine(s);
+        }
+
         #endregion
 
         /// <summary>
-        /// Holds a list of all the spreadsheet available on the server.
-        /// (Currently holds empty defaults)
+        /// Holds a list of all the spreadsheets available on the server.
         /// </summary>
-        List<string> spreadsheets = new List<string>(
+        List<string> savedSpreadsheets = new List<string>(
             new string[] 
         { 
-            "spreadsheetOne.ss",
-            "number2.ss",
-            "three.some",
-            "four.doc"
+            "spreadsheetOne",
+            "number2",
+            "three",
+            "taxes"
         });
+
 
 
         public void processMessage(NetworkStream clientStream, string received)
         {
             //describe what we got
-            Console.WriteLine("Received: "+ToLiteral(received));
+            d("R:" + ToLiteral(received));
 
-            ASCIIEncoding encoder = new ASCIIEncoding();
+            //ASCIIEncoding encoder = new ASCIIEncoding();
             string respond = "";
             string[] split = received.Split(ESC);
 
@@ -133,63 +146,66 @@ namespace ConsoleEchoServer
             {
                 if (split[1] == "james\n")
                 {
-
                     respond = "FILELIST";
-                    foreach (string s in spreadsheets)
+                    foreach (string s in savedSpreadsheets)
                         respond += ESC + s;
-                    respond += "\n";
                 }
                 else
                 {
-                    respond = "INVALID\n";
+                    respond = "INVALID";
                 }
             }
             else if (split[0] == "OPEN")
             {
-                respond = "ERROR" + ESC + "Not implemented yet\n";
+                respond = "ERROR" + ESC + "Not implemented yet";
             }
             else if (split[0] == "CREATE")
             {
-                respond = "ERROR" + ESC + "Not implemented yet\n";
+                respond = "ERROR" + ESC + "Not implemented yet";
             }
             else if (split[0] == "ENTER")
             {
-                respond = "ERROR" + ESC + "Not implemented yet\n";
+                respond = "ERROR" + ESC + "Not implemented yet";
             }
-            else if (split[0] == "RESYNC") //NOTE: may need a \n at the end
+            else if (split[0] == "RESYNC") //NOTE: may need a \n at the end of this check
             {
-                respond = "ERROR" + ESC + "Not implemented yet\n";
+                respond = "ERROR" + ESC + "Not implemented yet";
             }
             else if (split[0] == "UNDO")
             {
-                respond = "ERROR" + ESC + "Not implemented yet\n";
+                respond = "ERROR" + ESC + "Not implemented yet";
             }
             else if (split[0] == "SAVE")
             {
-                respond = "ERROR" + ESC + "Not implemented yet\n";
+                respond = "ERROR" + ESC + "Not implemented yet";
             }
             else if (split[0] == "DISCONNECT")
             {
-                respond = "ERROR" + ESC + "Not implemented yet\n";
+                respond = "ERROR" + ESC + "Not implemented yet";
             }
             else
             {
-                respond = "ERROR"+ESC+"Unknown command: "+received; //received should already have the \n at the end
+                respond = "ERROR"+ESC+"Unknown command: "+received; 
             }
 
+            //Tack on the required ending
+            respond += "\n";
 
+            //send the message
+            sendMessage(clientStream, respond);
+        }
 
-
+        private void sendMessage(NetworkStream clientStream, string message)
+        {
+            d(" :" + ToLiteral(message));
             //Relay response
-            byte[] buffer = encoder.GetBytes(respond);
-
+            byte[] buffer = new ASCIIEncoding().GetBytes(message);
             clientStream.Write(buffer, 0, buffer.Length);
             clientStream.Flush();
-
-
         }
 
         /// <summary>
+        /// Converts any escaped characters in the input into a seeable format like "\n"
         /// Borrowed from http://stackoverflow.com/questions/323640/can-i-convert-a-c-sharp-string-value-to-an-escaped-string-literal
         /// </summary>
         /// <param name="input"></param>
@@ -207,4 +223,9 @@ namespace ConsoleEchoServer
         }
 
     }
+
+
+    
+
+    
 }

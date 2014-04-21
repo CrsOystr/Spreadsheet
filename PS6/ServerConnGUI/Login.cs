@@ -73,7 +73,7 @@ namespace ServerConnGUI
             SetConnectionState(state.connecting);
 
             //Setup the new connection
-            connection = new ConnectionLiaison(Disconnected, ReceivedSomething);
+            connection = new ConnectionLiaison(Disconnected, ReceivedSomething, callWhenWeHaveSendingResults);
 
             //Grab what we know about this server and setup the connection properties
             separatorInfo si = getGuaranteedSepInfo(serverAddress);
@@ -262,6 +262,11 @@ namespace ServerConnGUI
 
         }
 
+        public void callWhenWeHaveSendingResults(Exception e, Object o)
+        {
+            if (e != null)
+                MessageBox.Show("Failed to send message:" + o.ToString()+"\nError:"+e.Message);
+        }
 
         /// <summary>
         /// Updates the GUI based off of what the connection state supposedly is.
@@ -455,7 +460,10 @@ namespace ServerConnGUI
             else //open a spreadsheet gui and tell it to request a new spreadsheet from the server
             {
                 //opens an new spreadsheet gui which takes over the connection
-                new SpreadsheetGUIForm(connection, newSpreadsheet_textBox.Text, true).Show();
+                lock (connection.GagLock)
+                {
+                    new SpreadsheetGUIForm(connection, newSpreadsheet_textBox.Text, true).Show();
+                }
 
                 newSpreadsheet_textBox.Text = "";
 

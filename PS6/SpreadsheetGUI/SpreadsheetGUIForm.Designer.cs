@@ -32,7 +32,6 @@
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.controlPanel = new System.Windows.Forms.Panel();
@@ -65,7 +64,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 6);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(107, 28);
+            this.menuStrip.Size = new System.Drawing.Size(199, 28);
             this.menuStrip.TabIndex = 3;
             this.menuStrip.Text = "menuStrip2";
             // 
@@ -73,7 +72,6 @@
             // 
             this.fileToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveToolStripMenuItem,
-            this.saveAsToolStripMenuItem,
             this.closeToolStripMenuItem2});
             this.fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
             this.fileToolStripMenuItem1.Size = new System.Drawing.Size(44, 24);
@@ -85,13 +83,6 @@
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(208, 24);
             this.saveToolStripMenuItem.Text = "Save            (Ctrl+S)";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
-            // 
-            // saveAsToolStripMenuItem
-            // 
-            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(208, 24);
-            this.saveAsToolStripMenuItem.Text = "Save As...";
-            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // closeToolStripMenuItem2
             // 
@@ -227,7 +218,6 @@
         private System.Windows.Forms.TextBox contentTextBox;
         private System.Windows.Forms.Label labelSeparator1;
         private System.Windows.Forms.Label CellName;
-        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
     }
 }
 

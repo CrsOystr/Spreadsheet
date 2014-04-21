@@ -10,7 +10,7 @@ namespace ConsoleEchoServer
     {
         static void Main(string[] args)
         {
-            int port = 3000;
+            int port = 2500;
             Console.WriteLine("Now listening on port " + port);
             new Server(port);
         }

@@ -330,7 +330,6 @@
             <summary>
             Constructor without an existing socket connection.
             </summary>
-            <param name="sock">The underlying connection used for communication.</param>
             <param name="whenMessageIsReceived">Function that is called when a message is received</param>
             <param name="whenDisconnected">Event called when the connection is lost.</param>
         </member>
@@ -387,6 +386,11 @@
             Makes sure the connection to the player is closed.
             </summary>
         </member>
+        <member name="F:SS.ConnectionLiaison.DEFAULT_PORT">
+            <summary>
+            Describes the default port this class will use, unless otherwise specified
+            </summary>
+        </member>
         <member name="F:SS.ConnectionLiaison.DEFAULT_ESC">
             <summary>
             The default value for the escape sequence
@@ -398,23 +402,83 @@
             client and server. This value can adapt if the server is using a different separation character (singular)
             </summary>
         </member>
-        <member name="M:SS.ConnectionLiaison.#ctor(System.Action{SS.SocketConnection,System.Exception},System.Action{SS.MessageReceivedFrom})">
+        <member name="F:SS.ConnectionLiaison.callBack">
             <summary>
-            
+            Method to call when sending something fails
+            </summary>
+        </member>
+        <member name="M:SS.ConnectionLiaison.#ctor(System.Action{SS.SocketConnection,System.Exception},System.Action{SS.MessageReceivedFrom},System.Action{System.Exception,System.Object})">
+            <summary>
+            Basic constructor for a connection liaison. This will not start a connection.
             </summary>
             <param name="whenDisconnected"></param>
             <param name="whenMessageIsReceived"></param>
+            <param name="whenSendingFails"></param>
         </member>
         <member name="M:SS.ConnectionLiaison.tryToConnect(System.String,System.Action,System.Action{System.String})">
             <summary>
             Attempts to connect to the specified server
             </summary>
+            <param name="server">the server address (hostname+":"+port) to which you want to connect</param>
             <param name="successfulConnect">Called if we successfully connect to the server</param>
             <param name="failedToConnect">Called if unable to connect to server at all.</param>
+        </member>
+        <member name="M:SS.ConnectionLiaison.sendPassword(System.String)">
+            <summary>
+            used to send the password
+            </summary>
+            <param name="pw"></param>
+        </member>
+        <member name="M:SS.ConnectionLiaison.sendOpen(System.String)">
+            <summary>
+            Used to request a spreadsheet be opened
+            </summary>
+            <param name="spreadsheetName"></param>
+        </member>
+        <member name="M:SS.ConnectionLiaison.sendCreate(System.String)">
+            <summary>
+            used to request a spreadsheet be created and opened
+            </summary>
+            <param name="spreadsheetname"></param>
+        </member>
+        <member name="M:SS.ConnectionLiaison.sendEnter(System.Int32,System.String,System.String)">
+            <summary>
+            used to request a change to the official spreadsheet
+            </summary>
+            <param name="versionNumber"></param>
+            <param name="cellName"></param>
+            <param name="cellContent"></param>
+        </member>
+        <member name="M:SS.ConnectionLiaison.sendResync">
+            <summary>
+            Used to ask for the entire spreadsheet again
+            </summary>
+        </member>
+        <member name="M:SS.ConnectionLiaison.sendUndo(System.Int32)">
+            <summary>
+            used to request an undo on the spreadsheet
+            </summary>
+            <param name="versionNumber"></param>
+        </member>
+        <member name="M:SS.ConnectionLiaison.sendSave(System.Int32)">
+            <summary>
+            Used to request the official spreadsheet be saved
+            </summary>
+            <param name="versionNumber"></param>
+        </member>
+        <member name="M:SS.ConnectionLiaison.sendDisconnect">
+            <summary>
+            used to request that the server disconnect. (?)
+            </summary>
         </member>
         <member name="P:SS.ConnectionLiaison.hostname">
             <summary>
             Address of the server to connect to
+            </summary>
+        </member>
+        <member name="P:SS.ConnectionLiaison.port">
+            <summary>
+            Describes the port this connection is using/will use
             </summary>
         </member>
         <member name="T:SS.MessageReceivedFrom">
