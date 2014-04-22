@@ -16,7 +16,7 @@ using namespace depend;
 namespace ss
 {
   typedef std::list< std::pair<std::string,std::string> > listPair;
-  
+
   class spread_sheet
   {
   private:
@@ -31,6 +31,9 @@ namespace ss
     spread_sheet(std::string name, bool exists); //constructor
     
     std::string get_name();
+    int get_version();
+    std::string get_spread();
+
     void save();
     std::pair<std::string,std::string> undo();
     bool load();

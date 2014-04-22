@@ -32,11 +32,34 @@ namespace ss
     return this->ss_name;
   }
   
+  int spread_sheet::get_version()
+  {
+    return this->ss_version;
+  }
+
+  std::string spread_sheet::get_spread()
+  {
+    std::stringstream state;
+    std::string ss_state;
+    state << this->ss_version;
+    
+    std::map<std::string,std::string>::iterator iter = this->ss_map.begin();
+    for(;iter != ss_map.end(); iter++)
+      {
+	state << '\e';
+	state << (*iter).first;
+	state << '\e';
+	state << (*iter).second;
+      } 
+    ss_state = state.str();
+    ss_state.push_back('\n');
+    return ss_state;
+  }
+  
   void spread_sheet::save()
   {
     //LOck
     ss_lock.lock();
-    std::map<std::string,std::string> save_map = this->ss_map;
     std::ofstream ss_file;
     std::string file_name  = this->ss_name + ".ss";
 
