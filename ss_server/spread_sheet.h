@@ -30,10 +30,10 @@ namespace ss
   public: 
     spread_sheet(std::string name, bool exists); //constructor
     
-	std::string get_name();
+    std::string get_name();
     void save();
-    void undo();
-    void load();
+    std::pair<std::string,std::string> undo();
+    bool load();
 
     //returns true if valid change, false if not
     bool change(std::string cell, std::string cell_content);

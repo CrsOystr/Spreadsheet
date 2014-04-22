@@ -58,18 +58,20 @@ namespace ss
     ss_lock.unlock();
   }
 
-  void spread_sheet::load()
+  bool spread_sheet::load()
   {
-    //LOCK
     ss_lock.lock();
     std::string tag, value;
     std::ifstream ss_file ;
     std::string file_name  = this->ss_name + ".txt";
+    bool valid_load = true;
     ss_file.open(file_name.c_str());
     getline(ss_file,tag);
     if (tag != "<spreadsheet>")
+      {
    	std::cout << "ERROR READING FILE" << std::endl;
-     
+	valid_load = false;
+      }
     while (getline(ss_file,tag))
       {
 	if (tag == "<version>")
@@ -92,32 +94,37 @@ namespace ss
 		getline(ss_file, content);
 		getline(ss_file,tag);
 	      }
-	    this->ss_map[cell] = content;
+	    this->change(cell, content);
+	      
 	    getline(ss_file,tag);
 	    getline(ss_file,tag);
 	  } 
       }
     //UNLOCK
     ss_lock.unlock();
+    return valid_load;
   }
 
   //undo function for spreadsheet, tries to undo last change made to spreadsheet
-  void spread_sheet::undo()
+  std::pair<std::string,std::string> spread_sheet::undo()
   {
     //LOCK
     ss_lock.lock();
+    std::string cell = NULL;
+    std::string cell_content = NULL;
     bool found_change = false;
     if (this->ss_changes.size()>0)
       {
-	std::string cell = this->ss_changes.back().first;
-	std::string cell_contents = this->ss_changes.back().second;
-	this->ss_map[cell]=cell_contents;
+	cell = this->ss_changes.back().first;
+	cell_content = this->ss_changes.back().second;
+	this->ss_map[cell]=cell_content;
 	this->ss_version++;
 	found_change = true;
 	this->ss_changes.pop_back();
       }  
     //LOCK
     ss_lock.unlock();  
+    return std::pair<std::string,std::string>(cell, cell_content);
   }
   
 
@@ -170,8 +177,8 @@ namespace ss
 	this->ss_map[cell]=cell_content;
 	this->ss_version++;
       }
-    return valid_change;
     ss_lock.unlock();
+    return valid_change;
   }
 }
 
