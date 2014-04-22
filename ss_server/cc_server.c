@@ -12,12 +12,9 @@
 #include <string.h>
 #include <dirent.h>
 #include "spread_sheet.h"
-#include <string>
+#include <cstring>
 
-
-//this wouldnt compile i dunno if we need it -Nic
-//typedef enum { false, true } bool;
-
+using namespace ss;
 
 //struct for a client data type
 //containing a connection ID
@@ -28,28 +25,14 @@ typedef struct
   struct sockaddr_in addrclient;
 } Client;
 
+
+
+
 //Defines our escape character that will be used to delimit as per protocol
 const char ESC = '\e';
 
 //defining function for authentication
 bool authentication(char buf[], int);
-
-//function for getting what files are available to user
-const char* get_file_list();
-
-
-/*const char* get_file_list()
-{
- 
-  //ret = malloc(256*sizeof(char));
-
-  ret = &temp[0];
-  printf(ret);
-  printf("BEFORE RETURN\n");
-  return ret;
-  }*/
-
-
 
 //handles all connected client requests
 void * thread_handle_clients(void *arg)
@@ -59,8 +42,6 @@ void * thread_handle_clients(void *arg)
   int connectionfd = client->connectionfd;
   struct sockaddr_in addrclient = client->addrclient;
   int i,j,k;
-
-  
 
   //while server is running listen for connections -- all of our commands will be handled here
   while(1)
@@ -91,65 +72,146 @@ void * thread_handle_clients(void *arg)
 
     //thread properly recieved send response
     printf("Server: %lu thread send the response to client\n", pthread_self());
-    //printf("Server: %s", buf);
+    // printf("Server: %s", buf);
     
     for(i = 0; buf[i] != '\e'; i++)
-      {
-	command[i] = buf[i];
-	k = i;
-      }
+    {
+      command[i] = buf[i];
+      k = i;
+    }
     
     std::string command_string(command);
     if(command_string == "PASSWORD")
-      {
-	printf("RECIEVED PASSWORD COMMAND");
+    {
+      printf("RECIEVED PASSWORD COMMAND\n");
+
+      if(authentication(buf,k))
+      {	
+	printf("authenticated\n");
+
+	//////
+	//
+	//Variables
+	//
+	//////
+	
+	char const* const fileName = "filelist.txt";
+	FILE* file;
+	char line[256];
+	char temp[256];
+	char array[256];
+	const char* ret;
+	int i;
+	int last_endline = 0;
+	int current_line = 0;
+	
+	//populate with filelist command and ESC	  
+	temp[0] = 'F';
+	temp[1] = 'I';
+	temp[2] = 'L';
+	temp[3] = 'E';
+	temp[4] = 'L';
+	temp[5] = 'I';
+	temp[6] = 'S';
+	temp[7] = 'T';
+	temp[8] = 27;
+
+	//open filelist.txt which holds a list of all the spreadsheets
+	file = fopen(fileName, "r");
+	
+	//while there are more lines
+	while(fgets(line, sizeof(line), file))
+	{
+	  //increment current line variable
+	  current_line++;
+	  //step down current line until new line
+	  for(i = 0; line[i] != '\n'; i++)
+	  {
+	    //set temp[8(allow for command)+current_line(for adding in ESC)+last_endline(how far into the array we are)+i]
+	    temp[8+current_line+last_endline+i] = line[i];
+	  }
+	  if(line[i] == '\n')
+	  {
+	    //ass to last_endline when endline
+	    last_endline += i;
+	    //add in ESC char
+	    temp[8+current_line+last_endline+i] = 27 ;
+	  } 
+	}	
+
+	//pointer to temp
+	tmp = &temp[0];
+
+	printf(tmp);
+	printf("\n");
+
+	//populate buffer with new string
+	for(i = 0; i < strlen(temp); i++)
+	{
+	  buf[i] = temp[i];
+	  // printf("buf[%i] = %c , temp[%i] = %c\n",i,buf[i],i,temp[i]);
+	}
+	
+	//send message and print out status
+	char str[256];
+	sprintf(str,"%d",send(connectionfd, buf, strlen(buf),0));
+	printf(str);
+	printf("   send return\n");
       }
+      else
+      {
+	printf("authen failed");
+	
+	buf[0] = 'I';
+	buf[1] = 'N';
+	buf[2] = 'V';
+	buf[3] = 'A';
+	buf[4] = 'L';
+	buf[5] = 'I';
+	buf[6] = 'D';
+	buf[7] = '\n';
+	buf[8] = '\0';
+	
+	if(-1 == send(connectionfd, buf, rb, 0))
+	{
+	  perror("Server: thread send failed authen failed");
+	  return NULL;
+	}
+       }
+    }
     else if(command_string == "OPEN")
-      {
-	printf("RECIEVED OPEN COMMAND");
-      }
+    {
+      printf("RECIEVED OPEN COMMAND\n");
+      
+      
+    }
     else if(command_string == "CREATE")
-      {
-	printf("RECIEVED CREATE COMMAND");
-      }
+    {
+      printf("RECIEVED CREATE COMMAND\n");
+    }
     else if(command_string == "ENTER")
-      {
-	printf("RECIEVED ENTER COMMAND");
-      }
+    {
+      printf("RECIEVED ENTER COMMAND\n");
+    }
     else if(command_string == "UNDO")
-      {
-	printf("RECIEVED UNDO COMMAND");
-      }
+    {
+      printf("RECIEVED UNDO COMMAND\n");
+    }
     else if(command_string == "SAVE")
-      {
-	printf("RECIEVED SAVE COMMAND");
-      }
+    {
+      printf("RECIEVED SAVE COMMAND\n");
+      
+    }
     else if(command_string == "DISCONNECT")
-      {
-	printf("RECIEVED DISCONNECT COMMAND");
-      }
+    {
+      printf("RECIEVED DISCONNECT COMMAND\n");
+    }
     else
-      {
-	printf("COMMAND RECIEVED IS NOT VALID");
-      }
+    {
+      printf("COMMAND RECIEVED IS NOT VALID\n");
+    }
 
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
+    /*
     bool authen = authentication(buf,k);
     
     if(authen)
@@ -229,11 +291,13 @@ void * thread_handle_clients(void *arg)
 	sprintf(str,"%d",send(connectionfd, buf, strlen(buf),0));
 	printf(str);
 	printf("   send return\n");
-	/*if(-1 == send(connectionfd, y, strlen(y), 0))
+    
+	
+	if(-1 == send(connectionfd, y, strlen(y), 0))
 	  {
 	    perror("Server: thread send failed authenicated");
 	    return NULL;
-	    }*/
+	    }
       }
     else
       {
@@ -255,19 +319,16 @@ void * thread_handle_clients(void *arg)
 	  }
        }
 	      
- 
-    /*if(-1 == send(connectionfd,temp, rb, 0))
+  
+      if(-1 == send(connectionfd,temp, rb, 0))
       {
 	perror("Server: thread send failed");
 	return NULL;
 	}*/
-
   }
   
   return NULL;
 }
-
-
 
 //AUTH function finds if the password is valid for the server and if itis returns true
 bool authentication(char buf[], int escseq)
@@ -296,11 +357,6 @@ bool authentication(char buf[], int escseq)
     }
   return authenticated;
 }
-
-
-
-
-
 
 //MAIN ENTRY POINT FOR PROGRAM. 
 int main(int argc, char *argv[])
