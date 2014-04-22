@@ -13,6 +13,8 @@
 #include <dirent.h>
 #include "spread_sheet.h"
 #include <cstring>
+#include <map>
+#include <boost/regex.hpp>
 
 using namespace ss;
 
@@ -25,6 +27,7 @@ typedef struct
   struct sockaddr_in addrclient;
 } Client;
 
+std::multimap<spread_sheet*, Client*> server_map;
 
 
 
@@ -41,8 +44,10 @@ void * thread_handle_clients(void *arg)
   client = (Client*)arg;
   int connectionfd = client->connectionfd;
   struct sockaddr_in addrclient = client->addrclient;
-  int i,j,k;
+  int i,k;
 
+  spread_sheet nic("true",false);
+  server_map.insert(std::pair<spread_sheet*, Client*>(&nic, client));
   //while server is running listen for connections -- all of our commands will be handled here
   while(1)
   {
@@ -52,6 +57,7 @@ void * thread_handle_clients(void *arg)
     //create buffer to store incoming data
     char buf[1024];
     char command[1024];
+    char command_content[1024];
     char *tmp;
     //rb acts as a status code for the current connection
     ssize_t rb = recv(connectionfd, buf, sizeof(buf), 0);
@@ -75,12 +81,27 @@ void * thread_handle_clients(void *arg)
     // printf("Server: %s", buf);
     
     for(i = 0; buf[i] != '\e'; i++)
-    {
-      command[i] = buf[i];
-      k = i;
-    }
-    
+      {
+	command[i] = buf[i];
+	k = i;
+      }
+    for(;buf[i] != '\n';i++)
+      {
+	command_content[i-k] = buf[i];
+      }
+
     std::string command_string(command);
+    std::string command_content_string(command_content);
+
+
+
+
+
+
+
+
+
+    //WHERE WE START DEALING WITH OUR COMMANDS
     if(command_string == "PASSWORD")
     {
       printf("RECIEVED PASSWORD COMMAND\n");
@@ -114,7 +135,7 @@ void * thread_handle_clients(void *arg)
 	temp[5] = 'I';
 	temp[6] = 'S';
 	temp[7] = 'T';
-	temp[8] = 27;
+	temp[8] = ESC;
 
 	//open filelist.txt which holds a list of all the spreadsheets
 	file = fopen(fileName, "r");
@@ -135,7 +156,7 @@ void * thread_handle_clients(void *arg)
 	    //ass to last_endline when endline
 	    last_endline += i;
 	    //add in ESC char
-	    temp[8+current_line+last_endline+i] = 27 ;
+	    temp[8+current_line+last_endline+i] = ESC ;
 	  } 
 	}	
 
@@ -144,13 +165,15 @@ void * thread_handle_clients(void *arg)
 
 	printf(tmp);
 	printf("\n");
-
+	
+	
 	//populate buffer with new string
-	for(i = 0; i < strlen(temp); i++)
+	for(int i = 0; i < strlen(temp); i++)
 	{
 	  buf[i] = temp[i];
 	  // printf("buf[%i] = %c , temp[%i] = %c\n",i,buf[i],i,temp[i]);
 	}
+	
 	
 	//send message and print out status
 	char str[256];
@@ -181,9 +204,7 @@ void * thread_handle_clients(void *arg)
     }
     else if(command_string == "OPEN")
     {
-      printf("RECIEVED OPEN COMMAND\n");
-      
-      
+      printf("RECIEVED OPEN COMMAND\n");  
     }
     else if(command_string == "CREATE")
     {
@@ -200,7 +221,6 @@ void * thread_handle_clients(void *arg)
     else if(command_string == "SAVE")
     {
       printf("RECIEVED SAVE COMMAND\n");
-      
     }
     else if(command_string == "DISCONNECT")
     {
@@ -211,122 +231,8 @@ void * thread_handle_clients(void *arg)
       printf("COMMAND RECIEVED IS NOT VALID\n");
     }
 
-    /*
-    bool authen = authentication(buf,k);
-    
-    if(authen)
-      {	
-	printf("authenticated\n");
 
-
-	//////
-	//
-	//Variables
-	//
-	//////
-	
-	char const* const fileName = "filelist.txt";
-	FILE* file;
-	char line[256];
-	char temp[256];
-	char array[256];
-	const char* ret;
-	int i;
-	int last_endline = 0;
-	int current_line = 0;
-	
-
-	//populate with filelist command and ESC	  
-	temp[0] = 'F';
-	temp[1] = 'I';
-	temp[2] = 'L';
-	temp[3] = 'E';
-	temp[4] = 'L';
-	temp[5] = 'I';
-	temp[6] = 'S';
-	temp[7] = 'T';
-	temp[8] = 27;
-
-	
-
-	//open filelist.txt which holds a list of all the spreadsheets
-	file = fopen(fileName, "r");
-	
-	//while there are more lines
-	while(fgets(line, sizeof(line), file))
-	  {
-	    //increment current line variable
-	    current_line++;
-	    //step down current line until new line
-	    for(i = 0; line[i] != '\n'; i++)
-	      {
-		//set temp[8(allow for command)+current_line(for adding in ESC)+last_endline(how far into the array we are)+i]
-		temp[8+current_line+last_endline+i] = line[i];
-	      }
-	    if(line[i] == '\n')
-	      {
-		//ass to last_endline when endline
-		last_endline += i;
-		//add in ESC char
-		temp[8+current_line+last_endline+i] = 27 ;
-	      }
-	    
-	  }	
-
-	//pointer to temp
-	tmp = &temp[0];
-
-	printf(tmp);
-	printf("\n");
-
-	//populate buffer with new string
-	for(i = 0; i < strlen(temp); i++)
-	  {
-	    buf[i] = temp[i];
-	    // printf("buf[%i] = %c , temp[%i] = %c\n",i,buf[i],i,temp[i]);
-	  }
-	
-	//send message and print out status
-	char str[256];
-	sprintf(str,"%d",send(connectionfd, buf, strlen(buf),0));
-	printf(str);
-	printf("   send return\n");
-    
-	
-	if(-1 == send(connectionfd, y, strlen(y), 0))
-	  {
-	    perror("Server: thread send failed authenicated");
-	    return NULL;
-	    }
-      }
-    else
-      {
-	printf("authen failed");
-	
-	buf[0] = 'I';
-	buf[1] = 'N';
-	buf[2] = 'V';
-	buf[3] = 'A';
-	buf[4] = 'L';
-	buf[5] = 'I';
-	buf[6] = 'D';
-	buf[7] = '\n';
-	
-	if(-1 == send(connectionfd, buf, rb, 0))
-	  {
-	    perror("Server: thread send failed authen failed");
-	    return NULL;
-	  }
-       }
-	      
-  
-      if(-1 == send(connectionfd,temp, rb, 0))
-      {
-	perror("Server: thread send failed");
-	return NULL;
-	}*/
   }
-  
   return NULL;
 }
 
@@ -339,7 +245,7 @@ bool authentication(char buf[], int escseq)
   char line[256];
   char pass[256];
   bool authenticated = true;
-  int i, j;
+  int i;
 
   file = fopen(fileName, "r");
 
