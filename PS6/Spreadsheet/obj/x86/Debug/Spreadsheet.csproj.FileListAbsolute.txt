@@ -26,10 +26,9 @@ C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spread
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Spreadsheet.pdb
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Spreadsheet.XML
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\DependencyGraph.dll
-\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Formula.dll
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\DependencyGraph.xml
-\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Formula.xml
-\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\StringSocket.xml
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.csprojResolveAssemblyReference.cache
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.dll
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.pdb
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Formula.dll
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Formula.xml

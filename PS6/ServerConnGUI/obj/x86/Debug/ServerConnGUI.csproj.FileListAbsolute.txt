@@ -58,9 +58,9 @@ C:\Users\James\Documents\GitHub\Spreadsheet\PS6\ServerConnGUI\obj\x86\Debug\Serv
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\ServerConnGUI\bin\x86\Debug\Spreadsheet.xml
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\ServerConnGUI\bin\x86\Debug\StringSocket.xml
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\ServerConnGUI\bin\x86\Debug\SpreadsheetPanel.xml
-\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\ServerConnGUI\bin\x86\Debug\Formula.xml
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\ServerConnGUI\bin\x86\Debug\DependencyGraph.xml
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\ServerConnGUI\obj\x86\Debug\ServerConnGUI.csprojResolveAssemblyReference.cache
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\ServerConnGUI\obj\x86\Debug\ServerConnGUI.Login.resources
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\ServerConnGUI\obj\x86\Debug\ServerConnGUI.Properties.Resources.resources
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\ServerConnGUI\obj\x86\Debug\ServerConnGUI.csproj.GenerateResource.Cache
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\ServerConnGUI\bin\x86\Debug\Formula.xml
