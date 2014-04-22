@@ -30,6 +30,7 @@ namespace ss
   public: 
     spread_sheet(std::string name, bool exists); //constructor
     
+	std::string get_name();
     void save();
     void undo();
     void load();

@@ -221,17 +221,33 @@ void * thread_handle_clients(void *arg)
     else if(command_string == "SAVE")
     {
       printf("RECIEVED SAVE COMMAND\n");
+	  
+	  std::multimap<spread_sheet*, Client*>::iterator it;
+ 
+	  for(it = server_map.begin(); it != server_map.end(); it++)
+	  {
+		if((*it)->get_name() == command_content_string)
+		{
+		  (*it)->save();
+		  break;
+		}
+	  }
     }
     else if(command_string == "DISCONNECT")
     {
       printf("RECIEVED DISCONNECT COMMAND\n");
+	  
+	  // Disconnect the client with the server
+	  if (-1 == close (connectionfd))
+	  {
+		perror ("close");
+	  }
     }
     else
     {
       printf("COMMAND RECIEVED IS NOT VALID\n");
     }
-
-
+	
   }
   return NULL;
 }

@@ -27,6 +27,11 @@ namespace ss
       }
   }
   
+  std::string spread_sheet::get_name()
+  {
+	return this->ss_name;
+  }
+  
   void spread_sheet::save()
   {
     //LOck
