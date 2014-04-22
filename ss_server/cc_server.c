@@ -30,9 +30,10 @@ typedef struct
   struct sockaddr_in addrclient;
 } Client;
 
+//
 std::multimap<spread_sheet*, Client*> server_map;
 
-
+std::string searchDir();
 
 //Defines our escape character that will be used to delimit as per protocol
 const char ESC = '\e';
@@ -81,7 +82,8 @@ void * thread_handle_clients(void *arg)
 
     //thread properly recieved send response
     printf("Server: %lu thread send the response to client\n", pthread_self());
-    // printf("Server: %s", buf);
+
+    //std::cout << buf << '\n' <<std::endl;
     
     for(i = 0; buf[i] != '\e'; i++)
       {
@@ -96,7 +98,7 @@ void * thread_handle_clients(void *arg)
     std::string command_string(command);
     std::string command_content_string(command_content);
 
-
+    std::cout << command_string <<std::endl;
     //WHERE WE START DEALING WITH OUR COMMANDS
     if(command_string == "PASSWORD")
     {
@@ -109,14 +111,10 @@ void * thread_handle_clients(void *arg)
 	std::string msg;
 	msg += "FILELIST";
 	msg += ESC;
-	
-	for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
-	  {
-	    msg += (*it).first->get_name();
-	    msg += ESC;  
-	  }
 
-	msg += "\n";
+	msg += searchDir();
+	
+	msg += "\n\0";
 	
 	const char * var;
 
@@ -153,10 +151,21 @@ void * thread_handle_clients(void *arg)
     else if(command_string == "OPEN")
     {
       printf("RECIEVED OPEN COMMAND\n");  
+      
+
+
+      std::string name = command_content_string.substr(6,command_content_string.find_first_of('\n'));
+      std::cout << name <<std::endl;      
+
     }
     else if(command_string == "CREATE")
     {
       printf("RECIEVED CREATE COMMAND\n");
+      
+      std::string name = command_content_string.substr(0, command_content_string.find_first_of(ESC));
+      
+      std::cout << name << std::endl;
+      
     }
     else if(command_string == "ENTER")
     {
@@ -261,6 +270,7 @@ void * thread_handle_clients(void *arg)
     else
     {
       printf("COMMAND RECIEVED IS NOT VALID\n");
+      std::cout <<command_string<<std::endl;
     }
 	
   }
@@ -286,8 +296,8 @@ bool authentication(char buf[], int escseq)
     {
       for(i = 0; line[i] != '\n'; i++)
 	{
-	  printf("line at %i: %c\n ",i,line[i]);
-	  printf("buf at  %i: %c\n ",i, buf[escseq+2+i]);
+	  // printf("line at %i: %c\n ",i,line[i]);
+	  //printf("buf at  %i: %c\n ",i, buf[escseq+2+i]);
 	  if(line[i] != buf[escseq+2+i])
 	    {
 	      authenticated = false;
@@ -296,6 +306,81 @@ bool authentication(char buf[], int escseq)
     }
   return authenticated;
 }
+
+//searches directory for spreadsheet files
+std::string searchDir()
+{
+  //pointer for current path
+  char *currentPath;
+
+  //get current working directory
+  if((currentPath = getcwd(NULL, 0)) == NULL)  
+    {  
+      perror("getcwd error");  
+    }  
+ 
+  std::string msg;
+  DIR* dp = opendir (currentPath);
+  if (! dp) {
+    perror ("opendir");
+   }
+
+  if (chdir (currentPath) == -1) {
+    perror ("chdir");
+   }
+
+  errno = 0;
+  struct dirent* de;
+
+  for (de = readdir (dp); de; de = readdir (dp))
+    {
+      int size = 0;
+      while(de->d_name[size] != 0)
+	{
+	  size++;
+	}
+      //printf("%d\n", size);
+      if(de->d_name[size - 4] != '.' && de->d_name[size - 3] == '.' &&  de->d_name[size - 2] == 's' && de->d_name[size - 1] == 's' )
+      {
+	msg+= de->d_name;
+	msg+= ESC;
+      }
+    }
+   
+  for(int i = 0; i < msg.length(); i++)
+    {
+      if(msg[i] == '.' && msg[i+1] == 's' && msg[i+2] == 's')
+	{
+	  //printf("%c%c%c  at %i,%i,%i\n",msg[i],msg[i+1],msg[i+2],i,i+1,i+2);
+	  msg.erase(i,3);
+	}
+      for(int o = 0; o < msg.length(); o++)
+	{
+	  if(msg[o] == ESC)
+	    {
+	      // std::cout << '\n';
+	    }
+	  else
+	    {
+	      //  std::cout << msg[o];
+	    }
+	}
+      
+      //printf("\n");
+    }
+
+  if (errno) {
+    perror ("readdir");
+   }
+  
+  free(currentPath);
+  closedir (dp);
+  
+  return msg;
+}
+
+
+
 
 //MAIN ENTRY POINT FOR PROGRAM. 
 int main(int argc, char *argv[])
