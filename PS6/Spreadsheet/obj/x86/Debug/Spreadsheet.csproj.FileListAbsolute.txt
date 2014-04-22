@@ -34,3 +34,5 @@ C:\Users\James\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spread
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\bin\x86\Debug\Formula.xml
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\SS.DebugWindow.resources
 \\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.csproj.GenerateResource.Cache
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\SS.DebugWindow.resources
+C:\Users\User\Documents\GitHub\Spreadsheet\PS6\Spreadsheet\obj\x86\Debug\Spreadsheet.csproj.GenerateResource.Cache

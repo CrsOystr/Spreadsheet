@@ -94,8 +94,8 @@ namespace SS
             //Start the connection attempt in it's own thread
             ThreadPool.QueueUserWorkItem((o) =>
             {
+                debug.write(type.send,"Trying to Connect to \"" + host + "\" on port " + port +"...");
                 ManualResetEvent waitForIt = new ManualResetEvent(false);
-
 
                 TcpClient client = new TcpClient();
 
@@ -112,13 +112,14 @@ namespace SS
                 }
 
                 // we have a result
-                    client.EndConnect(result);
-                
+                client.EndConnect(result);
 
                 this.sock = client.Client;
                 this.ss = new StringSocket(sock, new UTF8Encoding());
                 //Start receiving and processing commands
                 ss.BeginReceive(receivedSomething, null);
+
+                debug.write(type.send,"Successfully Connected to \"" + host + "\" on port " + port);
 
                 //Do something
                 successfullyConnected();

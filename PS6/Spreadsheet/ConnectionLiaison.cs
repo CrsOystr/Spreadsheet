@@ -93,7 +93,7 @@ namespace SS
 
 
             //tries to create a TCP Connection
-            this.TCPConnect(hostname, port, 2, successfulConnect, failedToConnect);
+            this.TCPConnect(hostname, port, 4, successfulConnect, failedToConnect);
         }
 
         /// <summary>
