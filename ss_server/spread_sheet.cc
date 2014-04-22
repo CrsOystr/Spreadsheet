@@ -136,7 +136,7 @@ namespace ss
   {
     //LOCK
     ss_lock.lock();
-    std::string cell;
+    std::string cell = "ERR";
     std::string cell_content;
     bool found_change = false;
     if (this->ss_changes.size()>0)

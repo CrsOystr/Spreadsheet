@@ -92,15 +92,21 @@ void * thread_handle_clients(void *arg)
 	command[i] = buf[i];
 	k = i;
       }
+    i += 1;
     for(;buf[i] != '\n';i++)
       {
-	command_content[i-k] = buf[i];
+	std::cout << "WORKcommand_string" <<std::endl;
+
+	command_content[i-k-1] = buf[i];
       }
 
     std::string command_string(command);
     std::string command_content_string(command_content);
 
+
     std::cout << command_string <<std::endl;
+    std::cout << command_content_string <<std::endl;
+
     //WHERE WE START DEALING WITH OUR COMMANDS
     if(command_string == "PASSWORD")
     {
@@ -165,20 +171,31 @@ void * thread_handle_clients(void *arg)
     {
       printf("RECIEVED CREATE COMMAND\n"); 
       std::string name = command_content_string.substr(0, command_content_string.find_first_of(ESC));
-     
+      std::string str_msg;
+      const char * msg;
+
       spread_sheet* ss = new spread_sheet("true",false);
       server_map.insert(std::pair<spread_sheet*, Client*>(ss, client));
       
+      str_msg = "UPDATE\e" + (*ss).get_version() + "\n";		  
+      msg = str_msg.c_str();
 
+      send(connectionfd, msg , strlen(msg), 0);
+      
       std::cout << name << std::endl;
     }
+
     else if(command_string == "ENTER")
     {
       printf("RECIEVED ENTER COMMAND\n");
-      std::string Message;
+      std::string str_msg;
       std::string cell_name = command_content_string.substr(0, command_content_string.find_first_of("\e"));
       std::string cell_content = command_content_string.substr(command_content_string.find_first_of("\e") + 1, command_content_string.find_last_of("\e") - command_content_string.find_first_of("\e") - 1);
-      std::string spreadsheet_name = command_content_string.substr(command_content_string.find_last_of("\e") + 1);
+      std::string spreadsheet_name = command_content_string.substr(command_content_string.find_last_of("\e") + 1,command_content_string.find_last_of("\n")-1);
+      
+      std::cout << command_content_string << std::endl;
+      std::cout << spreadsheet_name << std::endl;
+
       int successful = 0;
       const char * msg;
 	  
@@ -188,9 +205,8 @@ void * thread_handle_clients(void *arg)
 	    {
 	      if(it->first->change(cell_name, cell_content))
 		{
-		  Message = "UPDATE\e" + cell_name + "\e" + cell_content + "\n";
-			successful = 1;
-			break;
+		  str_msg = "UPDATE\e" + cell_name + "\e" + cell_content + "\n";
+		  successful = 1;
 		}
 	    }
 	}
@@ -201,6 +217,7 @@ void * thread_handle_clients(void *arg)
 	    {
 	      if(it->first->get_name() == spreadsheet_name)
 		{
+		  msg = str_msg.c_str();
 		  send(it->second->connectionfd, msg , strlen(msg), 0);
 		}
 	    }
@@ -218,7 +235,7 @@ void * thread_handle_clients(void *arg)
       printf("RECIEVED UNDO COMMAND\n");
 	  
 	  std::string Message = "";
-	  std::pair<std::string, std::string> cell = make_pair((std::string)NULL, (std::string)NULL);
+	  std::pair<std::string, std::string> cell;
 	  
 	  int successful = 0;
 	  const char * var;
@@ -227,7 +244,7 @@ void * thread_handle_clients(void *arg)
 		if(it->first->get_name() == command_content_string && it->second->connectionfd == connectionfd)
 		{
 		  cell = it->first->undo();
-		  if(cell.first != (std::string)NULL && cell.second != (std::string)NULL)
+		  if(cell.first != "ERR")
 		  {
 			Message = "UPDATE\e" + cell.first + "\e" + cell.second + "\n";
 			successful = 1;
