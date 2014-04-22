@@ -148,16 +148,36 @@ namespace ConsoleEchoServer
             {"A5","word!"}
         };
 
+        /// <summary>
+        /// Holds all of the cells (for every spreadsheet)
+        /// </summary>
+        Dictionary<string, string> cells = new Dictionary<string, string>();
+        bool first = true;
+
+
         int version_number = 0;
 
         public void processMessage(NetworkStream clientStream, string received)
         {
+            //Just so I don't have to go up to the constructor everytime I change something.
+            if (first)
+            {
+                first = false;
+
+                //add all the initial cells
+                for (int i = 0; i < setTwo.GetLength(0); i++)
+                    cells.Add(setTwo[i, 0], setTwo[i, 1]);
+
+            }
+
+
+
             //describe what we got
             d("R:" + ToLiteral(received));
 
             if (received[received.Length - 1] != '\n')
             {
-                d("*Err: received command did not end with \\n");
+                d("*Err: the received command did not end with \\n");
                 return;
             }
 
@@ -186,20 +206,46 @@ namespace ConsoleEchoServer
             {
                 respond = "UPDATE" + ESC + version_number;
 
-                foreach(string s in setTwo)
-                    respond += ESC + s;
+                foreach (string n in cells.Keys)
+                    respond += ESC + n + ESC + cells[n];
+
             }
             else if (split[0] == "CREATE")
             {
+                //Eh, clear the cells
+                cells = new Dictionary<string, string>();
                 respond = "UPDATE" + ESC + version_number;
             }
             else if (split[0] == "ENTER")
             {
-                respond = "ERROR" + ESC + "Not implemented yet";
+                int ver = 0;
+                //Try to get the version number. Throw error if failed
+                if (!int.TryParse(split[1], out ver))
+                    throw new Exception("Received ENTER error: Cannot parse version number: \"" + split[1] + "\".");
+
+                //If they have the wrong version, send them a sink.
+                if (ver != version_number)
+                {
+                    respond = "SYNC" + ESC + version_number;
+                    foreach (string n in cells.Keys)
+                        respond += ESC + n + ESC + cells[n];
+                }
+                else //if they do have the right version, add the cell and broadcast
+                {
+                    if (cells.ContainsKey(split[2]))
+                        cells[split[2]] = split[3];
+                    else
+                        cells.Add(split[2], split[3]);
+
+                    version_number++;
+                    respond = "UPDATE" + ESC + version_number + ESC + split[2] + ESC + split[3];
+                }
             }
-            else if (split[0] == "RESYNC") 
+            else if (split[0] == "RESYNC")
             {
-                respond = "ERROR" + ESC + "Not implemented yet";
+                respond = "SYNC" + ESC + version_number;
+                foreach (string n in cells.Keys)
+                    respond += ESC + n + ESC + cells[n];
             }
             else if (split[0] == "UNDO")
             {
@@ -207,11 +253,19 @@ namespace ConsoleEchoServer
             }
             else if (split[0] == "SAVE")
             {
-                respond = "ERROR" + ESC + "Not implemented yet";
+                int ver = 0;
+                //Try to get the version number. Throw error if failed
+                if (!int.TryParse(split[1], out ver))
+                    throw new Exception("Received ENTER error: Cannot parse version number: \"" + split[1] + "\".");
+
+                respond = "SAVED";
             }
             else if (split[0] == "DISCONNECT")
             {
-                respond = "ERROR" + ESC + "Not implemented yet";
+                //Save the file
+                //Disconnect them
+                clientStream.Close();
+                return;
             }
             else
             {

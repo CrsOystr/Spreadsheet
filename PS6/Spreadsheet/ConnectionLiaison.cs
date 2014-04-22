@@ -132,7 +132,7 @@ namespace SS
         /// <param name="cellContent"></param>
         public void sendEnter(int versionNumber, string cellName, string cellContent)
         {
-            this.SendMessage("CREATE" + ESC + versionNumber + ESC + cellName + ESC + cellContent, callBack);
+            this.SendMessage("ENTER" + ESC + versionNumber + ESC + cellName + ESC + cellContent, callBack);
         }
 
         /// <summary>

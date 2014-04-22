@@ -49,7 +49,7 @@
             this.IP_textbox.Name = "IP_textbox";
             this.IP_textbox.Size = new System.Drawing.Size(135, 20);
             this.IP_textbox.TabIndex = 0;
-            this.IP_textbox.Text = "127.0.0.1:2500";
+            this.IP_textbox.Text = "127.0.0.1";
             this.IP_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textbox_keyDown);
             // 
             // label1
@@ -152,6 +152,7 @@
             this.groupBox_connected.Controls.Add(this.ssListBox);
             this.groupBox_connected.Controls.Add(this.newSpreadsheet_textBox);
             this.groupBox_connected.Controls.Add(this.button1);
+            this.groupBox_connected.Enabled = false;
             this.groupBox_connected.Location = new System.Drawing.Point(5, 140);
             this.groupBox_connected.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox_connected.Name = "groupBox_connected";
@@ -164,7 +165,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(260, 411);
+            this.ClientSize = new System.Drawing.Size(260, 406);
             this.Controls.Add(this.groupBox_connected);
             this.Controls.Add(this.ServerButton);
             this.Controls.Add(this.StatusLabel);

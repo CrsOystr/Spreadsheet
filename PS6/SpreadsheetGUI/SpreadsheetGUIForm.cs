@@ -45,6 +45,8 @@ namespace SpreadsheetGUI
 
         #region Initializing stuff
 
+
+
         /// <summary>
         ///  All possible column letters
         /// </summary>
@@ -234,11 +236,10 @@ namespace SpreadsheetGUI
             //We shouldn't be getting any nulls here, but just in case...
             if (messenger == null || messenger.message == null)
             {
-                MessageBox.Show("Given an invalid message?");
-                return;
+                throw new Exception("Internal Error: passed an invalid message?");
             }
 
-            try
+            //try
             {
                 ConnectionLiaison cl = ((ConnectionLiaison)messenger.connection);
 
@@ -275,6 +276,51 @@ namespace SpreadsheetGUI
 
                     SafeGuiChange(() =>
                     {
+                        try
+                        {
+                            //Grab the cell stuff and put it into the spreadsheet
+                            for (int i = 2; i < split.Length; i += 2)
+                            {
+                                addCellToSpreadsheet(split[i], split[i + 1]);
+                            }
+
+                            //Update the spreadsheet view
+                            displaySelection(spreadsheetPanel1);
+                        }
+                        catch
+                        {
+                            //TODO report?
+                        }
+                            //Let the speadsheet open when we're done loading
+                            doneLoading();
+                    });
+                }
+                else if (split[0] == "SAVED")
+                {
+                    MessageBox.Show("SAVED!");
+                }
+                else if (split[0] == "SYNC")
+                {
+
+                    //first check version number
+                    int givenVersion = 0;
+                    if (!int.TryParse(split[1], out givenVersion))
+                    {
+                        throw new Exception("Error: Could not parse version number from UPDATE.");
+                    }
+
+
+                    //if the given version is not one more than the version we have
+                    if (++version_number != givenVersion)
+                    {
+                        //Then we need to resync instead of continuing.
+                        cl.sendResync();
+                        return;
+                    }
+                    
+                    //Update the cells
+                    SafeGuiChange(() =>
+                    {
                         //Grab the cell stuff and put it into the spreadsheet
                         for (int i = 2; i < split.Length; i += 2)
                         {
@@ -286,15 +332,7 @@ namespace SpreadsheetGUI
                         //Let the speadsheet open when we're done loading
                         doneLoading();
                     });
-                }
-                else if (split[0] == "SAVED")
-                {
-                    MessageBox.Show("SAVED!");
-                }
-                else if (split[0] == "SYNC")
-                {
-                    //** TODO
-                    MessageBox.Show("SYNC!");
+
 
                 }
                 else if (split[0] == "ERROR")
@@ -305,7 +343,7 @@ namespace SpreadsheetGUI
                 else
                     MessageBox.Show("Unknown Message from server: \n" + messenger.message);
 
-            }
+            } /*/
             catch (Exception e)
             {
                 SafeGuiChange(() =>
@@ -313,7 +351,7 @@ namespace SpreadsheetGUI
                         //TODO update status label with exception?
                         MessageBox.Show("Error processing received message:\n" + e.Message);
                     });
-            }
+            } //*/
         }
 
 
@@ -342,13 +380,24 @@ namespace SpreadsheetGUI
             updateGUICells(ss.SetContentsOfCell(CellName, CellContent));
         }
 
-
+        
         /// <summary>
         /// Attempts to add the contents of the content box to the spreadsheet
         /// </summary>
         private void processContentTextBox()
         {
             //TODO convert to our needs
+            connection.sendEnter(version_number,this.CellName.Text, this.contentTextBox.Text);
+        }
+
+        /*
+        /// <summary>
+        /// Attempts to add the contents of the content box to the spreadsheet
+        /// </summary>
+        private void processContentTextBox()
+        {
+            //TODO convert to our needs
+
 
             //Validate content and update values/grid
             try
@@ -367,6 +416,7 @@ namespace SpreadsheetGUI
                 displaySelection(spreadsheetPanel1);
             }
         }
+        //*/
 
         //checks if it already has a fileReference, if not then do the same thing as "Save As.."
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -653,23 +703,35 @@ namespace SpreadsheetGUI
         private void SpreadsheetGUIForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             //check if there are any unsaved changed
-            if (ss.Changed)
-                e.Cancel = !areYouSure(); //bring up the confirmation dialog and tell the form to actually close or not
+            //if (ss.Changed)
+            DialogResult dr = areYouSure();
+            if (dr == DialogResult.Yes)
+                connection.sendDisconnect();
+            else if (dr == DialogResult.No)
+            {
+                //Simply let the server disconnect
+            }
+            else //Anything else, cancel closing
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            //redirect the disconnect and message received stuff
+            connection.setDirectOutputTo(null, null);
         }
 
         /// <summary>
         /// Brings up a confirmation dialog asking if the user is sure they want to continue
         /// </summary>
         /// <returns>Return true if they clicked Yes to "Are you sure you want to continue?"</returns>
-        private bool areYouSure()
+        private DialogResult areYouSure()
         {
-            const string message = "There are unsaved changes to this spreadsheet.\nAre you sure you want to continue?";
+            const string message = "Do you want to save changes before you close?";
             const string caption = "Wait a sec!";
-            var result = MessageBox.Show(message, caption,
-                                         MessageBoxButtons.YesNo,
+            return MessageBox.Show(message, caption,
+                                         MessageBoxButtons.YesNoCancel,
                                          MessageBoxIcon.Question);
-
-            return result == DialogResult.Yes;
         }
 
         #endregion

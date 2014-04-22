@@ -25,7 +25,7 @@ namespace ServerConnGUI
         public enum state { notLoggedIn, connecting, connected, lostConnection };
         private state _lState = state.notLoggedIn;
 
-        int smallFormHeight = 220;
+        int smallFormHeight;
         int largeFormHeight;
 
         bool expectingDisconnect = false;
@@ -53,6 +53,13 @@ namespace ServerConnGUI
         {
             SetConnectionState(state.notLoggedIn);
             connection = null;
+
+            //Figure out the height of the title bar (part of positioning the bottom of the initial 
+            Rectangle screenRectangle = RectangleToScreen(this.ClientRectangle);
+            int titleHeight = screenRectangle.Top - this.Top;
+
+            //calculate how big we can have the window without revealing the bottom area
+            smallFormHeight = groupBox_connected.Location.Y + titleHeight;
             largeFormHeight = this.Height;
             this.Height = smallFormHeight;
         }
