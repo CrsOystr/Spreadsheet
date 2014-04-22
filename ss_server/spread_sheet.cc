@@ -29,7 +29,7 @@ namespace ss
   
   std::string spread_sheet::get_name()
   {
-	return this->ss_name;
+    return this->ss_name;
   }
   
   void spread_sheet::save()
@@ -110,8 +110,8 @@ namespace ss
   {
     //LOCK
     ss_lock.lock();
-    std::string cell = NULL;
-    std::string cell_content = NULL;
+    std::string cell;
+    std::string cell_content;
     bool found_change = false;
     if (this->ss_changes.size()>0)
       {
@@ -133,6 +133,8 @@ namespace ss
   bool spread_sheet::change(std::string cell, std::string cell_content)
   {
     this->ss_lock.lock();
+
+    cell[0]=toupper(cell[0]);
     bool valid_change = true;
     if (cell_content[0] == '=')
       {
@@ -142,8 +144,10 @@ namespace ss
 	boost::sregex_iterator end;
 	for(;iter !=end; ++iter)
 	  {
+	    std::string dependee = iter->str();
+	    dependee[0] = toupper(dependee[0]);
 	    //adds dependency
-	    this->ss_dg.add_dependency(cell,iter->str());
+	    this->ss_dg.add_dependency(cell,dependee);
 	    
 	    //list used to test for circular dependencys
 	    std::list<std::string> t_list;
