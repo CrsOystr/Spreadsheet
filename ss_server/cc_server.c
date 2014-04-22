@@ -12,6 +12,12 @@
 #include <string.h>
 #include <dirent.h>
 #include "spread_sheet.h"
+#include <string>
+
+
+//this wouldnt compile i dunno if we need it -Nic
+//typedef enum { false, true } bool;
+
 
 //struct for a client data type
 //containing a connection ID
@@ -22,12 +28,29 @@ typedef struct
   struct sockaddr_in addrclient;
 } Client;
 
-//typedef enum { false, true } bool;
-
+//Defines our escape character that will be used to delimit as per protocol
 const char ESC = '\e';
 
+//defining function for authentication
 bool authentication(char buf[], int);
+
+//function for getting what files are available to user
 const char* get_file_list();
+
+
+/*const char* get_file_list()
+{
+ 
+  //ret = malloc(256*sizeof(char));
+
+  ret = &temp[0];
+  printf(ret);
+  printf("BEFORE RETURN\n");
+  return ret;
+  }*/
+
+
+
 //handles all connected client requests
 void * thread_handle_clients(void *arg)
 {
@@ -37,7 +60,9 @@ void * thread_handle_clients(void *arg)
   struct sockaddr_in addrclient = client->addrclient;
   int i,j,k;
 
-  //while server is running listen for connections
+  
+
+  //while server is running listen for connections -- all of our commands will be handled here
   while(1)
   {
     //recieved connection request
@@ -70,14 +95,63 @@ void * thread_handle_clients(void *arg)
     
     for(i = 0; buf[i] != '\e'; i++)
       {
-	//command[i] = buf[i];
+	command[i] = buf[i];
 	k = i;
       }
+    
+    std::string command_string(command);
+    if(command_string == "PASSWORD")
+      {
+	printf("RECIEVED PASSWORD COMMAND");
+      }
+    else if(command_string == "OPEN")
+      {
+	printf("RECIEVED OPEN COMMAND");
+      }
+    else if(command_string == "CREATE")
+      {
+	printf("RECIEVED CREATE COMMAND");
+      }
+    else if(command_string == "ENTER")
+      {
+	printf("RECIEVED ENTER COMMAND");
+      }
+    else if(command_string == "UNDO")
+      {
+	printf("RECIEVED UNDO COMMAND");
+      }
+    else if(command_string == "SAVE")
+      {
+	printf("RECIEVED SAVE COMMAND");
+      }
+    else if(command_string == "DISCONNECT")
+      {
+	printf("RECIEVED DISCONNECT COMMAND");
+      }
+    else
+      {
+	printf("COMMAND RECIEVED IS NOT VALID");
+      }
 
-    bool authen = authentication(buf,k);
+
+
+
+
+
     
 
 
+
+
+
+
+
+
+
+
+
+    bool authen = authentication(buf,k);
+    
     if(authen)
       {	
 	printf("authenticated\n");
@@ -100,7 +174,7 @@ void * thread_handle_clients(void *arg)
 	int current_line = 0;
 	
 
-	//populate with filelist command and ESC
+	//populate with filelist command and ESC	  
 	temp[0] = 'F';
 	temp[1] = 'I';
 	temp[2] = 'L';
@@ -181,8 +255,7 @@ void * thread_handle_clients(void *arg)
 	  }
        }
 	      
-  
-    
+ 
     /*if(-1 == send(connectionfd,temp, rb, 0))
       {
 	perror("Server: thread send failed");
@@ -194,6 +267,9 @@ void * thread_handle_clients(void *arg)
   return NULL;
 }
 
+
+
+//AUTH function finds if the password is valid for the server and if itis returns true
 bool authentication(char buf[], int escseq)
 {
  //variables for file open
@@ -215,28 +291,18 @@ bool authentication(char buf[], int escseq)
 	  if(line[i] != buf[escseq+2+i])
 	    {
 	      authenticated = false;
-	      return authenticated;
 	    }
 	}
     }
-  
   return authenticated;
-      
 }
 
-/*const char* get_file_list()
-{
- 
-  //ret = malloc(256*sizeof(char));
-
-  ret = &temp[0];
-  printf(ret);
-  printf("BEFORE RETURN\n");
-  return ret;
-  }*/
 
 
-//Entry point for program
+
+
+
+//MAIN ENTRY POINT FOR PROGRAM. 
 int main(int argc, char *argv[])
 {
   //need port from command line
@@ -269,17 +335,15 @@ int main(int argc, char *argv[])
   addr.sin_port = htons(atoi(argv[1]));
   //accept any interface
   addr.sin_addr.s_addr = INADDR_ANY;
-  
+
   //assigns local address to serverSocketfd
   //return -1 on error
-  if(bind(serverSocketfd, (struct sockaddr*)&addr, sizeof(addr)) == -1)
+  if(-1 == bind(serverSocketfd, (struct sockaddr*)&addr, sizeof(addr)))
   {
     perror("Server: Server socket bind failed");
     return -1;
   }
 
-  // bind(serverSocketfd, (struct sockaddr*)&addr, sizeof(addr));
-      
   printf("Server: Start listening...\n");
 
   //listens for connections over serverSocketfd with a message queue of size 1024
