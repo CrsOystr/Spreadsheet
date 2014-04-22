@@ -38,7 +38,7 @@ namespace ss
     ss_lock.lock();
     std::map<std::string,std::string> save_map = this->ss_map;
     std::ofstream ss_file;
-    std::string file_name  = this->ss_name + ".txt";
+    std::string file_name  = this->ss_name + ".ss";
 
     ss_file.open(file_name.c_str());
     ss_file << "<spreadsheet>" << std::endl;
@@ -63,7 +63,7 @@ namespace ss
     ss_lock.lock();
     std::string tag, value;
     std::ifstream ss_file ;
-    std::string file_name  = this->ss_name + ".txt";
+    std::string file_name  = this->ss_name + ".ss";
     bool valid_load = true;
     ss_file.open(file_name.c_str());
     getline(ss_file,tag);
