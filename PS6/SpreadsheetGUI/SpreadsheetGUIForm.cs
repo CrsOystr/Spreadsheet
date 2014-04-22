@@ -38,6 +38,16 @@ namespace SpreadsheetGUI
         bool requestedNewSpreadsheet;
 
         /// <summary>
+        /// Describes how the form will close. "True" will close the spreadsheet without any prompts or sent disconnect requests.
+        /// </summary>
+        bool forcedClosed = false;
+        
+        /// <summary>
+        /// True if this spreadsheet client has already closed and is ignoring any more socket stuff.
+        /// </summary>
+        bool clientAlreadyClosed = false;
+
+        /// <summary>
         /// This number respesents the version number the client believes the spreadsheet is on. 
         /// -1 means the number has not been set yet.
         /// </summary>
@@ -96,7 +106,7 @@ namespace SpreadsheetGUI
             //Take over the connection with the server
             this.connection = Connection;
             this.connection.setDirectOutputTo(CalledWhenDisconnected, receivedSomething);
-            this.connection.callBack = callWithSendingResults;
+            this.connection.callBack = receivedSendingResults;
 
             //Initially the form is disabled until it has loaded all the cell data
             this.Enabled = false;
@@ -214,11 +224,19 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void CalledWhenDisconnected(SocketConnection sc, Exception e)
         {
-            MessageBox.Show("Error on spreadsheet \""+spreadsheetName+"\": \n - Lost connection with server.");
-            SafeGuiChange(() =>
+            if (!clientAlreadyClosed)
+            {
+                SafeGuiChange(() =>
                 {
+                    //Disable the spreadsheet
+                    this.Enabled = false;
+
+                    MessageBox.Show("Error on spreadsheet \"" + spreadsheetName + "\": \n - Lost connection with server.");
+                    forcedClosed = true;
+
                     Close();
                 });
+            }
         }
 
         /// <summary>
@@ -239,7 +257,7 @@ namespace SpreadsheetGUI
                 throw new Exception("Internal Error: passed an invalid message?");
             }
 
-            //try
+            try
             {
                 ConnectionLiaison cl = ((ConnectionLiaison)messenger.connection);
 
@@ -343,15 +361,17 @@ namespace SpreadsheetGUI
                 else
                     MessageBox.Show("Unknown Message from server: \n" + messenger.message);
 
-            } /*/
+            } 
             catch (Exception e)
             {
+                /*
                 SafeGuiChange(() =>
                     {
                         //TODO update status label with exception?
                         MessageBox.Show("Error processing received message:\n" + e.Message);
                     });
-            } //*/
+                //*/
+            } 
         }
 
 
@@ -390,33 +410,6 @@ namespace SpreadsheetGUI
             connection.sendEnter(version_number,this.CellName.Text, this.contentTextBox.Text);
         }
 
-        /*
-        /// <summary>
-        /// Attempts to add the contents of the content box to the spreadsheet
-        /// </summary>
-        private void processContentTextBox()
-        {
-            //TODO convert to our needs
-
-
-            //Validate content and update values/grid
-            try
-            {
-                updateGUICells(ss.SetContentsOfCell(this.CellName.Text, this.contentTextBox.Text));
-            }
-            catch (Exception ex)
-            {
-                //If you run into an exception, then display it
-                MessageBox.Show("UPDATE Error:" + ex.Message);
-            }
-            finally
-            {
-                //make sure the ssPanel display is set correctly
-                //update cell info panel
-                displaySelection(spreadsheetPanel1);
-            }
-        }
-        //*/
 
         //checks if it already has a fileReference, if not then do the same thing as "Save As.."
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -429,7 +422,7 @@ namespace SpreadsheetGUI
         /// </summary>
         private void saveFileAction()
         {
-            //TODO
+            connection.sendSave(version_number);
         }
 
 
@@ -449,7 +442,7 @@ namespace SpreadsheetGUI
         /// </summary>
         /// <param name="e"></param>
         /// <param name="o"></param>
-        public void callWithSendingResults(Exception e, Object o)
+        public void receivedSendingResults(Exception e, Object o)
         {
             if (e != null)
                 MessageBox.Show("Failed to send message:" + o.ToString() + "\nError:" + e.Message);
@@ -702,23 +695,25 @@ namespace SpreadsheetGUI
         //If there have been unsaved changed, make sure the user wants to close
         private void SpreadsheetGUIForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //check if there are any unsaved changed
-            //if (ss.Changed)
-            DialogResult dr = areYouSure();
-            if (dr == DialogResult.Yes)
-                connection.sendDisconnect();
-            else if (dr == DialogResult.No)
+            //if we aren't trying to force the client to shutdown
+            if (!forcedClosed)
             {
-                //Simply let the server disconnect
-            }
-            else //Anything else, cancel closing
-            {
-                e.Cancel = true;
-                return;
+                DialogResult dr = areYouSure();
+                if (dr == DialogResult.Yes)
+                    connection.sendDisconnect();
+                else if (dr == DialogResult.No)
+                {
+                    //Simply let the server disconnect
+                }
+                else //Anything else, cancel closing
+                {
+                    e.Cancel = true;
+                    return;
+                }
             }
 
-            //redirect the disconnect and message received stuff
-            connection.setDirectOutputTo(null, null);
+            //Ignore all further communications from the server
+            clientAlreadyClosed = true;
         }
 
         /// <summary>
@@ -735,6 +730,11 @@ namespace SpreadsheetGUI
         }
 
         #endregion
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            connection.sendUndo(version_number);
+        }
 
     }
 }
