@@ -32,9 +32,12 @@ namespace ss
     return this->ss_name;
   }
   
-  int spread_sheet::get_version()
+  std::string spread_sheet::get_version()
   {
-    return this->ss_version;
+    std::stringstream version;
+    version << this->ss_version;
+    std::string ss_vers = version.str();
+    return ss_vers;
   }
 
   std::string spread_sheet::get_spread()

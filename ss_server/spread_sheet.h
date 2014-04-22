@@ -31,7 +31,7 @@ namespace ss
     spread_sheet(std::string name, bool exists); //constructor
     
     std::string get_name();
-    int get_version();
+    std::string get_version();
     std::string get_spread();
 
     void save();

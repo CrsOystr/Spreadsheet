@@ -50,8 +50,6 @@ void * thread_handle_clients(void *arg)
   struct sockaddr_in addrclient = client->addrclient;
   int i,k;
 
-  spread_sheet nic("true",false);
-  server_map.insert(std::pair<spread_sheet*, Client*>(&nic, client));
   //while server is running listen for connections -- all of our commands will be handled here
   while(1)
   {
@@ -83,7 +81,11 @@ void * thread_handle_clients(void *arg)
     //thread properly recieved send response
     printf("Server: %lu thread send the response to client\n", pthread_self());
 
-    //std::cout << buf << '\n' <<std::endl;
+    // std::cout << buf << '\n' <<std::endl;
+    
+    memset(command, '\0', sizeof(char)*1024);
+    memset(command_content, '\0', sizeof(char)*1024);
+
     
     for(i = 0; buf[i] != '\e'; i++)
       {
@@ -154,18 +156,21 @@ void * thread_handle_clients(void *arg)
       
 
 
+
       std::string name = command_content_string.substr(6,command_content_string.find_first_of('\n'));
       std::cout << name <<std::endl;      
 
     }
     else if(command_string == "CREATE")
     {
-      printf("RECIEVED CREATE COMMAND\n");
-      
+      printf("RECIEVED CREATE COMMAND\n"); 
       std::string name = command_content_string.substr(0, command_content_string.find_first_of(ESC));
+     
+      spread_sheet* ss = new spread_sheet("true",false);
+      server_map.insert(std::pair<spread_sheet*, Client*>(ss, client));
       
+
       std::cout << name << std::endl;
-      
     }
     else if(command_string == "ENTER")
     {
@@ -206,6 +211,8 @@ void * thread_handle_clients(void *arg)
 	}
       
     }
+
+    //UNDO COMMANDS
     else if(command_string == "UNDO")
     {
       printf("RECIEVED UNDO COMMAND\n");
