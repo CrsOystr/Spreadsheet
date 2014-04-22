@@ -125,12 +125,22 @@ namespace SpreadsheetGUI
             InitializeComponent();
 
             //setup click event on spreadsheet
-            spreadsheetPanel1.SelectionChanged += displaySelection;
+            spreadsheetPanel1.SelectionChanged += selectionChanged;
 
             //finish initializing everything and clear them
             clearAll();
         }
 
+        /// <summary>
+        /// When you click somewhere on the spreadsheet grid, 
+        /// allow the cell info to update.
+        /// </summary>
+        /// <param name="sp"></param>
+        private void selectionChanged(SpreadsheetPanel sp)
+        {
+            doNotUpdateCellInfo = false;
+            displaySelection(sp);
+        }
 
         //Stuff to do after form loads
         private void SpreadsheetGUIForm_Load(object sender, EventArgs e)
