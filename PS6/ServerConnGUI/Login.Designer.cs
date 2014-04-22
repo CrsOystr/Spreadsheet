@@ -49,7 +49,7 @@
             this.IP_textbox.Name = "IP_textbox";
             this.IP_textbox.Size = new System.Drawing.Size(135, 20);
             this.IP_textbox.TabIndex = 0;
-            this.IP_textbox.Text = "127.0.0.1";
+            this.IP_textbox.Text = "lab1-35:6969";
             this.IP_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textbox_keyDown);
             // 
             // label1
@@ -85,7 +85,7 @@
             this.PW_textbox.Name = "PW_textbox";
             this.PW_textbox.Size = new System.Drawing.Size(135, 20);
             this.PW_textbox.TabIndex = 4;
-            this.PW_textbox.Text = "james";
+            this.PW_textbox.Text = "a";
             this.PW_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textbox_keyDown);
             // 
             // label4

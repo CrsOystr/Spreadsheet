@@ -53,6 +53,11 @@ namespace SpreadsheetGUI
         /// </summary>
         int version_number = -1;
 
+        /// <summary>
+        /// If true, do not update the cell info panel
+        /// </summary>
+        bool doNotUpdateCellInfo = false;
+
         #region Initializing stuff
 
 
@@ -303,7 +308,7 @@ namespace SpreadsheetGUI
                             }
 
                             //Update the spreadsheet view
-                            displaySelection(spreadsheetPanel1);
+                            //displaySelection(spreadsheetPanel1);
                         }
                         catch
                         {
@@ -346,7 +351,7 @@ namespace SpreadsheetGUI
                         }
 
                         //Update the spreadsheet view
-                        displaySelection(spreadsheetPanel1);
+                        //displaySelection(spreadsheetPanel1);
                         //Let the speadsheet open when we're done loading
                         doneLoading();
                     });
@@ -457,42 +462,45 @@ namespace SpreadsheetGUI
         /// <param name="spreadsheetPanel">The spreadsheet panel of cells</param>
         private void displaySelection(SpreadsheetPanel spreadsheetPanel)
         {
-            //the row and column of the currently selected cell
-            int row, col;
-            //the value of the currently selected cell
-            String value;
-            //an intermediate holder for the content of the selected cell
-            object preContent;
-            //the content of the selected cell
-            string content;
-            //the cell name of the selected cell
-            string cellName;
+            if (!doNotUpdateCellInfo)
+            {
+                //the row and column of the currently selected cell
+                int row, col;
+                //the value of the currently selected cell
+                String value;
+                //an intermediate holder for the content of the selected cell
+                object preContent;
+                //the content of the selected cell
+                string content;
+                //the cell name of the selected cell
+                string cellName;
 
-            //find out which cell was selected
-            spreadsheetPanel.GetSelection(out col, out row);
+                //find out which cell was selected
+                spreadsheetPanel.GetSelection(out col, out row);
 
-            //Get the contents and value of the selected cell
-            cellName = getCellName(row, col);
-            //figure out what the content is
-            preContent = ss.GetCellContents(cellName);
-            content = preContent.ToString();
-            //put a '=' in front if it's a formula
-            if (preContent is Formula)
-                content = "=" + preContent.ToString();
-            else
+                //Get the contents and value of the selected cell
+                cellName = getCellName(row, col);
+                //figure out what the content is
+                preContent = ss.GetCellContents(cellName);
                 content = preContent.ToString();
+                //put a '=' in front if it's a formula
+                if (preContent is Formula)
+                    content = "=" + preContent.ToString();
+                else
+                    content = preContent.ToString();
 
-            //determine the correct value
-            value = getProperValue(cellName);
+                //determine the correct value
+                value = getProperValue(cellName);
 
-            //Update the cell info panel display
-            this.CellName.Text = cellName;
-            this.contentTextBox.Text = content;
-            this.valueLabel.Text = value;
+                //Update the cell info panel display
+                this.CellName.Text = cellName;
+                this.contentTextBox.Text = content;
+                this.valueLabel.Text = value;
 
-            //put focus on the text box
-            this.ActiveControl = this.contentTextBox;
-            this.contentTextBox.Select(this.contentTextBox.Text.Length, 0);
+                //put focus on the text box
+                this.ActiveControl = this.contentTextBox;
+                this.contentTextBox.Select(this.contentTextBox.Text.Length, 0);
+            }
         }
 
 
@@ -547,6 +555,8 @@ namespace SpreadsheetGUI
         //activate when we press a button while in the cell content box
         private void contentTextBox_KeyDown(object sender, KeyEventArgs e)
         {
+            doNotUpdateCellInfo = true;
+
             //describes if a special key action was taken
             bool didSomething = false;
 
@@ -555,6 +565,7 @@ namespace SpreadsheetGUI
             {
                 processContentTextBox();
                 didSomething = true;
+                doNotUpdateCellInfo = false;
             }
             else if (e.KeyValue == 46) //if the delete button was pressed then delete the contents of the current cell
             {
@@ -607,6 +618,7 @@ namespace SpreadsheetGUI
                 //These will suppress the annoying ding sound when you do something valid
                 e.Handled = true;
                 e.SuppressKeyPress = true;
+                
             }
 
         }
@@ -625,6 +637,8 @@ namespace SpreadsheetGUI
             spreadsheetPanel1.GetSelection(out col, out row);
             //adjust the position
             spreadsheetPanel1.SetSelection(col + y, row + x);
+
+            doNotUpdateCellInfo = false;
             //update the display
             displaySelection(spreadsheetPanel1);
         }
