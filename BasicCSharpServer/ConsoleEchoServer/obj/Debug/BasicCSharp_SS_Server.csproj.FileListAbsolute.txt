@@ -13,3 +13,15 @@ C:\Users\User\Documents\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\b
 C:\Users\User\Documents\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\DependencyGraph.xml
 C:\Users\User\Documents\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\Formula.xml
 C:\Users\User\Documents\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\StringSocket.xml
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\ConsoleEchoServer.exe.config
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\obj\Debug\ConsoleEchoServer.exe
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\obj\Debug\ConsoleEchoServer.pdb
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\ConsoleEchoServer.exe
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\ConsoleEchoServer.pdb
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\DependencyGraph.dll
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\Formula.dll
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\StringSocket.dll
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\DependencyGraph.xml
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\Formula.xml
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\bin\Debug\StringSocket.xml
+\\chips.eng.utah.edu\home\jasteck\.win_desktop\GitHub\Spreadsheet\BasicCSharpServer\ConsoleEchoServer\obj\Debug\BasicCSharp_SS_Server.csprojResolveAssemblyReference.cache

@@ -49,7 +49,7 @@
             this.IP_textbox.Name = "IP_textbox";
             this.IP_textbox.Size = new System.Drawing.Size(135, 20);
             this.IP_textbox.TabIndex = 0;
-            this.IP_textbox.Text = "155.98.111.64:2500";
+            this.IP_textbox.Text = "127.0.0.1:2500";
             this.IP_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textbox_keyDown);
             // 
             // label1
@@ -130,7 +130,7 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(178, 235);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(56, 19);
             this.button1.TabIndex = 9;
@@ -141,7 +141,7 @@
             // newSpreadsheet_textBox
             // 
             this.newSpreadsheet_textBox.Location = new System.Drawing.Point(9, 235);
-            this.newSpreadsheet_textBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.newSpreadsheet_textBox.Margin = new System.Windows.Forms.Padding(2);
             this.newSpreadsheet_textBox.Name = "newSpreadsheet_textBox";
             this.newSpreadsheet_textBox.Size = new System.Drawing.Size(166, 20);
             this.newSpreadsheet_textBox.TabIndex = 10;
@@ -153,9 +153,9 @@
             this.groupBox_connected.Controls.Add(this.newSpreadsheet_textBox);
             this.groupBox_connected.Controls.Add(this.button1);
             this.groupBox_connected.Location = new System.Drawing.Point(5, 140);
-            this.groupBox_connected.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox_connected.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox_connected.Name = "groupBox_connected";
-            this.groupBox_connected.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox_connected.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox_connected.Size = new System.Drawing.Size(245, 264);
             this.groupBox_connected.TabIndex = 11;
             this.groupBox_connected.TabStop = false;

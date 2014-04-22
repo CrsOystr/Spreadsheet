@@ -155,6 +155,15 @@ namespace ConsoleEchoServer
             //describe what we got
             d("R:" + ToLiteral(received));
 
+            if (received[received.Length - 1] != '\n')
+            {
+                d("*Err: received command did not end with \\n");
+                return;
+            }
+
+            //Take off the \n at the end
+            received = received.Substring(0, received.Length - 1);
+
             //ASCIIEncoding encoder = new ASCIIEncoding();
             string respond = "";
             string[] split = received.Split(ESC);
@@ -162,7 +171,7 @@ namespace ConsoleEchoServer
             //Look at what they sent us
             if (split[0] == "PASSWORD")
             {
-                if (split[1] == "james\n")
+                if (split[1] == "james")
                 {
                     respond = "FILELIST";
                     foreach (string s in savedSpreadsheets)
@@ -176,7 +185,8 @@ namespace ConsoleEchoServer
             else if (split[0] == "OPEN")
             {
                 respond = "UPDATE" + ESC + version_number;
-                foreach(string s in setOne)
+
+                foreach(string s in setTwo)
                     respond += ESC + s;
             }
             else if (split[0] == "CREATE")
@@ -187,7 +197,7 @@ namespace ConsoleEchoServer
             {
                 respond = "ERROR" + ESC + "Not implemented yet";
             }
-            else if (split[0] == "RESYNC") //NOTE: may need a \n at the end of this check
+            else if (split[0] == "RESYNC") 
             {
                 respond = "ERROR" + ESC + "Not implemented yet";
             }

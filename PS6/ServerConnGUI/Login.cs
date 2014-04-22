@@ -204,6 +204,9 @@ namespace ServerConnGUI
             //Password accepted, get a list of all available spreadsheets
             if (split[0] == "FILELIST")
             {
+                //successfully connected with this protocol
+                si.failedCount = 0;
+
                 //if our password was accepted then consider ourselves connected
                 //ViewState already uses SafeGuiChange, so we don't need to do it here
                 SetConnectionState(state.connected);
@@ -218,6 +221,9 @@ namespace ServerConnGUI
             }
             else if (split[0] == "INVALID") //Password was rejected
             {
+                //successfully connected with this protocol
+                si.failedCount = 0;
+
                 //Simply disconnect from the server
                 manualDisconnect();
                 //set the custom status

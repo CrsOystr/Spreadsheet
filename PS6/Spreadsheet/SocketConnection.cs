@@ -68,7 +68,7 @@ namespace SS
 
 
             this.sock = sock;
-            this.ss = new StringSocket(sock, UnicodeEncoding.ASCII);
+            this.ss = new StringSocket(sock, new UTF8Encoding());
             //Start receiving and processing commands
             ss.BeginReceive(receivedSomething, null);
         }

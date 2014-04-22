@@ -103,7 +103,7 @@ namespace SS
         public void sendPassword(string pw)
         {
              //the zeros are to enable using this same buffer to send back messages of longer length to avoid formatting issues
-            this.SendMessage("PASSWORD" + ESC + pw + "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\n" , callBack);
+            this.SendMessage("PASSWORD" + ESC + pw, callBack);
         }
 
         /// <summary>

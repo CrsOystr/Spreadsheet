@@ -228,6 +228,9 @@ namespace SpreadsheetGUI
         /// <param name="messenger"></param>
         private void receivedSomething(MessageReceivedFrom messenger)
         {
+            //Remeber what cell were updated
+            HashSet<string> cellsUpdated = new HashSet<string>();
+
             //We shouldn't be getting any nulls here, but just in case...
             if (messenger == null || messenger.message == null)
             {
@@ -235,62 +238,82 @@ namespace SpreadsheetGUI
                 return;
             }
 
-            //Split the message via the special delimiter
-            string[] split = messenger.message.Split(connection.ESC);
-
-            //Decide what to do with the message received
-            if (split[0] == "UPDATE")
+            try
             {
-                //first check version number
-                int givenVersion = 0;
-                if (!int.TryParse(split[1], out givenVersion))
-                {
-                    MessageBox.Show("Error: Could not parse version number from update");
-                    return;
-                }
+                ConnectionLiaison cl = ((ConnectionLiaison)messenger.connection);
 
-                //If we do not have a verson number stored yet, just take theirs
-                if (version_number < 0)
-                    version_number = givenVersion;
-                else //verify it's the version we expect
+                //Split the message via the special delimiter
+                string[] split = messenger.message.Split(connection.ESC);
+
+                //Decide what to do with the message received
+                if (split[0] == "UPDATE")
                 {
-                    //if the given version is not one more than the version we have
-                    if (++version_number != givenVersion)
+                    //Make sure the parsing is good
+                    if (split.Length < 2)
+                        throw new Exception("Error: Invalid UPDATE received.");
+
+                    //first check version number
+                    int givenVersion = 0;
+                    if (!int.TryParse(split[1], out givenVersion))
                     {
-                        //Then we need to resync
-                        //TODO
-
+                        throw new Exception("Error: Could not parse version number from UPDATE.");
                     }
+
+                    //If we do not have a verson number stored yet, just take theirs
+                    if (version_number < 0)
+                        version_number = givenVersion;
+                    else //verify it's the version we expect
+                    {
+                        //if the given version is not one more than the version we have
+                        if (++version_number != givenVersion)
+                        {
+                            //Then we need to resync instead of continuing.
+                            cl.sendResync();
+                            return;
+                        }
+                    }
+
+                    SafeGuiChange(() =>
+                    {
+                        //Grab the cell stuff and put it into the spreadsheet
+                        for (int i = 2; i < split.Length; i += 2)
+                        {
+                            addCellToSpreadsheet(split[i], split[i + 1]);
+                        }
+
+                        //Update the spreadsheet view
+                        displaySelection(spreadsheetPanel1);
+                        //Let the speadsheet open when we're done loading
+                        doneLoading();
+                    });
                 }
-
-                SafeGuiChange(() =>
+                else if (split[0] == "SAVED")
                 {
-                    //Grab the cell stuff and put it into the spreadsheet
-                    //TODO
+                    MessageBox.Show("SAVED!");
+                }
+                else if (split[0] == "SYNC")
+                {
+                    //** TODO
+                    MessageBox.Show("SYNC!");
 
-
-                    //Let the speadsheet open when we're done loading
-                    doneLoading();
-                });
-            }
-            else if (split[0] == "SAVED")
-            {
-                //** TODO
-                MessageBox.Show("SAVED!");
-            }
-            else if (split[0] == "SYNC")
-            {
-                //** TODO
-                MessageBox.Show("SYNC!");
+                }
+                else if (split[0] == "ERROR")
+                {
+                    //** TODO?
+                    MessageBox.Show("Server Error: " + split[1]);
+                }
+                else
+                    MessageBox.Show("Unknown Message from server: \n" + messenger.message);
 
             }
-            else if (split[0] == "ERROR")
+            catch (Exception e)
             {
-                //** TODO?
-                MessageBox.Show("Server Error: " + split[1]);
+                SafeGuiChange(() =>
+                    {
+                        //TODO update status label with exception?
+                        MessageBox.Show("Error processing received message:\n" + e.Message);
+                    });
             }
-            else
-                MessageBox.Show("Unknown Message from server: \n" + messenger.message);
         }
 
 
@@ -310,6 +333,15 @@ namespace SpreadsheetGUI
                 this.Invoke((MethodInvoker)delegate { toInvoke(); });
         }
 
+        /// <summary>
+        /// Attempts to add the contents of the content box to the spreadsheet
+        /// </summary>
+        private void addCellToSpreadsheet(string CellName, string CellContent)
+        {
+            //Add the cell and, sure, update the GUI while we're at it.
+            updateGUICells(ss.SetContentsOfCell(CellName, CellContent));
+        }
+
 
         /// <summary>
         /// Attempts to add the contents of the content box to the spreadsheet
@@ -326,7 +358,7 @@ namespace SpreadsheetGUI
             catch (Exception ex)
             {
                 //If you run into an exception, then display it
-                MessageBox.Show("Error:" + ex.Message);
+                MessageBox.Show("UPDATE Error:" + ex.Message);
             }
             finally
             {
