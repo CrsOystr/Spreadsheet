@@ -170,9 +170,5 @@ namespace SS
         }
 
 
-        
-
-        // ** TODO  Create more methods like the sendPassword that the Spreadsheet can use
-
     }
 }

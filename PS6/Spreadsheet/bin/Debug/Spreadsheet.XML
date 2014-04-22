@@ -481,6 +481,75 @@
             Describes the port this connection is using/will use
             </summary>
         </member>
+        <member name="T:SS.type">
+            <summary>
+            Represents the type of debug message which will determine the color it displays in the debug window.
+            </summary>
+        </member>
+        <member name="T:SS.DebugWindow">
+            <summary>
+            A window for displaying log messages
+            </summary>
+        </member>
+        <member name="M:SS.DebugWindow.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SS.DebugWindow.write(SS.type,System.String)">
+            <summary>
+            Writes to the debug window
+            </summary>
+            <param name="messageType">The message type determines the highligh color the message will be logged with</param>
+            <param name="message">The message to log in the debug window.</param>
+        </member>
+        <member name="M:SS.DebugWindow.ToLiteral(System.String)">
+            <summary>
+            Converts any escaped characters in the input into a seeable format like "\n"
+            Borrowed from http://stackoverflow.com/questions/323640/can-i-convert-a-c-sharp-string-value-to-an-escaped-string-literal
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="F:SS.DebugWindow.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SS.DebugWindow.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SS.DebugWindow.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:SS.debug">
+            <summary>
+            Used to send log messages to the debug window.
+            </summary>
+        </member>
+        <member name="M:SS.debug.show">
+            <summary>
+            Shows the debug window
+            </summary>
+        </member>
+        <member name="M:SS.debug.hide">
+            <summary>
+            Hides the debug window
+            </summary>
+        </member>
+        <member name="M:SS.debug.write(SS.type,System.String)">
+            <summary>
+            Writes to the debug window
+            </summary>
+            <param name="messageType">The message type determines the highligh color the message will be logged with</param>
+            <param name="message">The message to log in the debug window.</param>
+        </member>
         <member name="T:SS.MessageReceivedFrom">
             <summary>
             Only used when an actual message has been received. Contains a SocketConnection that recieved the message along with the message recieved.

@@ -105,7 +105,9 @@ namespace SS
 
                 if (!success || !client.Connected)
                 {
-                    failedToConnect("Failed to Connect to \"" + host + "\" on port " + port);
+                    string err = "Failed to Connect to \"" + host + "\" on port " + port;
+                    debug.write(type.error, err);
+                    failedToConnect(err);
                     return;
                 }
 
@@ -176,6 +178,7 @@ namespace SS
                         //Detects whether we have been given somewhere to send the received messages
                         if (directOutputTo != null)
                         {
+                            debug.write(type.receive, s+"\n");
                             this.directOutputTo(new MessageReceivedFrom(this, s));
                         }
                         //otherwise ignore what we received
@@ -198,7 +201,7 @@ namespace SS
             {
                 //Send the message with the terminating character attached
                 ss.BeginSend(p + "\n", (e, o) => { if (theSendCallback != null) { theSendCallback(e, o); } }, p);
-
+                debug.write(type.send, p + "\n");
                 return true;
             }
             else
@@ -225,6 +228,7 @@ namespace SS
             //First check if it's connected
             if (isConnected())
             {
+                debug.write(type.other, "Manually disconnected from server.");
                 sock.Shutdown(SocketShutdown.Both);
                 sock.Close();
             }

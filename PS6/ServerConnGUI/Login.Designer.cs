@@ -40,6 +40,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.newSpreadsheet_textBox = new System.Windows.Forms.TextBox();
             this.groupBox_connected = new System.Windows.Forms.GroupBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.groupBox_connected.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -161,11 +162,22 @@
             this.groupBox_connected.TabIndex = 11;
             this.groupBox_connected.TabStop = false;
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(15, 86);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(84, 23);
+            this.button2.TabIndex = 12;
+            this.button2.Text = "Debug";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(260, 406);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.groupBox_connected);
             this.Controls.Add(this.ServerButton);
             this.Controls.Add(this.StatusLabel);
@@ -201,6 +213,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox newSpreadsheet_textBox;
         private System.Windows.Forms.GroupBox groupBox_connected;
+        private System.Windows.Forms.Button button2;
     }
 }
 

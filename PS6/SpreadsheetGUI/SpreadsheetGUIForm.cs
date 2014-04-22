@@ -154,8 +154,6 @@ namespace SpreadsheetGUI
         /// </summary>
         private void clearAll()
         {
-            //clear the textbox
-            contentTextBox.Text = "";
             //this.ActiveControl = null;  //TODO why was this here?
 
             //create a blank spreadsheet
@@ -170,6 +168,9 @@ namespace SpreadsheetGUI
 
             //set first selection to A1 (0,0)
             spreadsheetPanel1.SetSelection(0, 0);
+
+            //update the cell info
+            displaySelection(spreadsheetPanel1);
         }
 
         /// <summary>
@@ -245,8 +246,9 @@ namespace SpreadsheetGUI
                 {
                     //Disable the spreadsheet
                     this.Enabled = false;
-
-                    MessageBox.Show("Error on spreadsheet \"" + spreadsheetName + "\": \n - Lost connection with server.");
+                    string err = "Error on spreadsheet \"" + spreadsheetName + "\": \n - Lost connection with server.";
+                    debug.write(type.error, err);
+                    MessageBox.Show(err);
                     forcedClosed = true;
 
                     Close();
@@ -269,7 +271,7 @@ namespace SpreadsheetGUI
             //We shouldn't be getting any nulls here, but just in case...
             if (messenger == null || messenger.message == null)
             {
-                throw new Exception("Internal Error: passed an invalid message?");
+                debug.write(type.error, "Internal Error: passed an invalid message?");
             }
 
             try
@@ -320,9 +322,9 @@ namespace SpreadsheetGUI
                             //Update the spreadsheet view
                             //displaySelection(spreadsheetPanel1);
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            //TODO report?
+                            debug.write(type.error, "Error adding cell to spreadsheet: " + e.Message);
                         }
                             //Let the speadsheet open when we're done loading
                             doneLoading();
@@ -370,7 +372,6 @@ namespace SpreadsheetGUI
                 }
                 else if (split[0] == "ERROR")
                 {
-                    //** TODO?
                     MessageBox.Show("Server Error: " + split[1]);
                 }
                 else
@@ -379,13 +380,8 @@ namespace SpreadsheetGUI
             } 
             catch (Exception e)
             {
-                /*
-                SafeGuiChange(() =>
-                    {
-                        //TODO update status label with exception?
-                        MessageBox.Show("Error processing received message:\n" + e.Message);
-                    });
-                //*/
+                debug.write(type.error, "Error processing received message: \""+messenger.message+"\": " + e.Message);
+                return;
             } 
         }
 
@@ -402,8 +398,12 @@ namespace SpreadsheetGUI
         /// <param name="toInvoke"></param>
         private void SafeGuiChange(Action toInvoke)
         {
-            if (this.IsHandleCreated)
-                this.Invoke((MethodInvoker)delegate { toInvoke(); });
+            try
+            {
+                if (this.IsHandleCreated)
+                    this.Invoke((MethodInvoker)delegate { toInvoke(); });
+            }
+            catch { }
         }
 
         /// <summary>
@@ -421,7 +421,22 @@ namespace SpreadsheetGUI
         /// </summary>
         private void processContentTextBox()
         {
-            //TODO convert to our needs
+            string content = this.contentTextBox.Text;
+
+            if (content.StartsWith("="))
+            {
+                try //See if the content is a valid formula
+                {
+                    Formula f = new Formula(content.Substring(1,content.Length-1));
+                }
+                catch (Exception e) //If it's not report it and don't send
+                {
+                    debug.write(type.error, "Bad formula input: " + e.Message);
+                    MessageBox.Show("Bad formula!");
+                    return;
+                }
+            }
+            //Otherwise, send the content
             connection.sendEnter(version_number,this.CellName.Text, this.contentTextBox.Text);
         }
 
