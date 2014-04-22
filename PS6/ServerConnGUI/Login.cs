@@ -62,6 +62,9 @@ namespace ServerConnGUI
             smallFormHeight = groupBox_connected.Location.Y + titleHeight;
             largeFormHeight = this.Height;
             this.Height = smallFormHeight;
+
+
+            debug.show();
         }
 
 
@@ -198,7 +201,8 @@ namespace ServerConnGUI
             }
             catch
             {
-
+                debug.write(type.error, "Failed to convert SocketConnection to ConnectionLiaison.");
+                return;
             }
 
             //get the separator info for the connection
@@ -466,6 +470,8 @@ namespace ServerConnGUI
         //called when we want to create a new spreadsheet
         private void button1_Click(object sender, EventArgs e)
         {
+            debug.show();
+
             string problem = null;
             //Make sure the spreadsheet name is valid
             if (newSpreadsheet_textBox.Text == "")
@@ -494,6 +500,11 @@ namespace ServerConnGUI
                 //Make a new connection with ther server
                 ServerButton_Click(null, null);
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            debug.toggleDebug();
         }
 
     }
