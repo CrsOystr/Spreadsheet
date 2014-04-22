@@ -169,25 +169,51 @@ void * thread_handle_clients(void *arg)
 	  std::string cell_name = command_content_string.substr(0, command_content_string.find_first_of("\e"));
 	  std::string cell_content = command_content_stringsubstr(command_content_string.find_first_of("\e") + 1, command_content_string.find_last_of("\e") - command_content_string.find_first_of("\e") - 1);
 	  std::string spreadsheet_name = command_content_stringsubstr.substr(command_content_stringsubstr.find_last_of("\e") + 1);
+	  int successful = 0;
 	  
+	  for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
+	  {
+		if(it->first->get_name() == spreadsheet_name && it->second.connectionfd == connectionfd)
+		{
+		  if(it->first->change(cell_name, cell_content))
+		  {
+			Message = "UPDATE\e" + cell_name + "\e" + cell_content + "\n";
+			successful = 1;
+			break;
+		  }
+		}
+	  }
 	  
+	  if(successful)
+	  {
+		for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
+		  {
+			if(it->first->get_name() == spreadsheet_name)
+			{
+			  send(it->second.connectionfd, Message, Message.length(), 0);
+			}
+		  }
+	  }
+	  else
+	  {
+		// error
+	  }
 	  
     }
     else if(command_string == "UNDO")
     {
       printf("RECIEVED UNDO COMMAND\n");
 	  
-	  std::multimap<spread_sheet*, Client*>::iterator it;
 	  std::string Message = "";
 	  std::pair<std::string, std::string> cell = NULL;
 	  int successful = 0;
  
 	  // 
-	  for(it = server_map.begin(); it != server_map.end(); it++)
+	  for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
 	  {
-		if((*it)->get_name() == command_content_string && it->second.connectionfd == connectionfd)
+		if(it->first->get_name() == command_content_string && it->second.connectionfd == connectionfd)
 		{
-		  cell = (*it)->undo();
+		  cell = it->first->undo();
 		  if(cell.first != NULL && cell.second != NULL)
 		  {
 			Message = "UPDATE\e" + cell.first + "\e" + cell.second + "\n";
@@ -202,7 +228,7 @@ void * thread_handle_clients(void *arg)
 	  {
 		  for(it = server_map.begin(); it != server_map.end(); it++)
 		  {
-			if((*it)->get_name() == command_content_string)
+			if(it->first->get_name() == command_content_string)
 			{
 			  send(it->second.connectionfd, Message, Message.length(), 0);
 			}
@@ -213,17 +239,15 @@ void * thread_handle_clients(void *arg)
     else if(command_string == "SAVE")
     {
       printf("RECIEVED SAVE COMMAND\n");
-       
-      std::multimap<spread_sheet*, Client*>::iterator it;
- 
-      for(it = server_map.begin(); it != server_map.end(); it++)
-	{
-	  if((*it)->get_name() == command_content_string)
-	    {
-	      (*it)->save();
-	      break;
-	    }
-	}
+	  
+	  for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
+	  {
+		if(it->first->get_name() == command_content_string && it->second.connectionfd == connectionfd)
+		{
+		  it->first->save();
+		  break;
+		}
+	  }
     }
     else if(command_string == "DISCONNECT")
     {
