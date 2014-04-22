@@ -110,74 +110,26 @@ void * thread_handle_clients(void *arg)
       {	
 	printf("authenticated\n");
 
-	//////
-	//
-	//Variables
-	//
-	//////
+	std::string msg;
+	msg += "FILELIST";
+	msg += ESC;
 	
-	char const* const fileName = "filelist.txt";
-	FILE* file;
-	char line[256];
-	char temp[256];
-	char array[256];
-	const char* ret;
-	int i;
-	int last_endline = 0;
-	int current_line = 0;
-	
-	//populate with filelist command and ESC	  
-	temp[0] = 'F';
-	temp[1] = 'I';
-	temp[2] = 'L';
-	temp[3] = 'E';
-	temp[4] = 'L';
-	temp[5] = 'I';
-	temp[6] = 'S';
-	temp[7] = 'T';
-	temp[8] = ESC;
-
-	//open filelist.txt which holds a list of all the spreadsheets
-	file = fopen(fileName, "r");
-	
-	//while there are more lines
-	while(fgets(line, sizeof(line), file))
-	{
-	  //increment current line variable
-	  current_line++;
-	  //step down current line until new line
-	  for(i = 0; line[i] != '\n'; i++)
+	for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
 	  {
-	    //set temp[8(allow for command)+current_line(for adding in ESC)+last_endline(how far into the array we are)+i]
-	    temp[8+current_line+last_endline+i] = line[i];
+	    msg += (*it).first->get_name();
+	    msg += ESC;  
 	  }
-	  if(line[i] == '\n')
-	  {
-	    //ass to last_endline when endline
-	    last_endline += i;
-	    //add in ESC char
-	    temp[8+current_line+last_endline+i] = ESC ;
-	  } 
-	}	
 
-	//pointer to temp
-	tmp = &temp[0];
+	msg += "\n";
+	
+	const char * var;
 
-	printf(tmp);
-	printf("\n");
-	
-	
-	//populate buffer with new string
-	for(int i = 0; i < strlen(temp); i++)
-	{
-	  buf[i] = temp[i];
-	  // printf("buf[%i] = %c , temp[%i] = %c\n",i,buf[i],i,temp[i]);
-	}
-	
-	
+	var = msg.c_str();
+
+
 	//send message and print out status
 	char str[256];
-	sprintf(str,"%d",send(connectionfd, buf, strlen(buf),0));
+	sprintf(str,"%d",send(connectionfd, var, strlen(var),0));
 	printf(str);
 	printf("   send return\n");
       }
@@ -195,7 +147,7 @@ void * thread_handle_clients(void *arg)
 	buf[7] = '\n';
 	buf[8] = '\0';
 	
-	if(-1 == send(connectionfd, buf, rb, 0))
+	if(-1 == send(connectionfd, buf, strlen(buf), 0))
 	{
 	  perror("Server: thread send failed authen failed");
 	  return NULL;
@@ -221,17 +173,17 @@ void * thread_handle_clients(void *arg)
     else if(command_string == "SAVE")
     {
       printf("RECIEVED SAVE COMMAND\n");
-	  
-	  std::multimap<spread_sheet*, Client*>::iterator it;
+       
+      std::multimap<spread_sheet*, Client*>::iterator it;
  
-	  for(it = server_map.begin(); it != server_map.end(); it++)
-	  {
-		if((*it)->get_name() == command_content_string)
-		{
-		  (*it)->save();
-		  break;
-		}
-	  }
+      for(it = server_map.begin(); it != server_map.end(); it++)
+	{
+	  if((*it)->get_name() == command_content_string)
+	    {
+	      (*it)->save();
+	      break;
+	    }
+	}
     }
     else if(command_string == "DISCONNECT")
     {
