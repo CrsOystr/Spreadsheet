@@ -13,8 +13,11 @@
 #include <dirent.h>
 #include "spread_sheet.h"
 #include <cstring>
+#include <sys/stat.h>
 #include <map>
 #include <boost/regex.hpp>
+#include <utility>
+
 
 using namespace ss;
 
@@ -94,13 +97,6 @@ void * thread_handle_clients(void *arg)
     std::string command_content_string(command_content);
 
 
-
-
-
-
-
-
-
     //WHERE WE START DEALING WITH OUR COMMANDS
     if(command_string == "PASSWORD")
     {
@@ -165,56 +161,57 @@ void * thread_handle_clients(void *arg)
     else if(command_string == "ENTER")
     {
       printf("RECIEVED ENTER COMMAND\n");
+      std::string Message;
+      std::string cell_name = command_content_string.substr(0, command_content_string.find_first_of("\e"));
+      std::string cell_content = command_content_string.substr(command_content_string.find_first_of("\e") + 1, command_content_string.find_last_of("\e") - command_content_string.find_first_of("\e") - 1);
+      std::string spreadsheet_name = command_content_string.substr(command_content_string.find_last_of("\e") + 1);
+      int successful = 0;
+      const char * msg;
 	  
-	  std::string cell_name = command_content_string.substr(0, command_content_string.find_first_of("\e"));
-	  std::string cell_content = command_content_stringsubstr(command_content_string.find_first_of("\e") + 1, command_content_string.find_last_of("\e") - command_content_string.find_first_of("\e") - 1);
-	  std::string spreadsheet_name = command_content_stringsubstr.substr(command_content_stringsubstr.find_last_of("\e") + 1);
-	  int successful = 0;
-	  
-	  for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
-	  {
-		if(it->first->get_name() == spreadsheet_name && it->second.connectionfd == connectionfd)
+      for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
+	{
+	  if(it->first->get_name() == spreadsheet_name && it->second->connectionfd == connectionfd)
+	    {
+	      if(it->first->change(cell_name, cell_content))
 		{
-		  if(it->first->change(cell_name, cell_content))
-		  {
-			Message = "UPDATE\e" + cell_name + "\e" + cell_content + "\n";
+		  Message = "UPDATE\e" + cell_name + "\e" + cell_content + "\n";
 			successful = 1;
 			break;
-		  }
 		}
+	    }
+	}
+      
+      if(successful)
+	{
+	  for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
+	    {
+	      if(it->first->get_name() == spreadsheet_name)
+		{
+		  send(it->second->connectionfd, msg , strlen(msg), 0);
+		}
+	    }
 	  }
-	  
-	  if(successful)
-	  {
-		for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
-		  {
-			if(it->first->get_name() == spreadsheet_name)
-			{
-			  send(it->second.connectionfd, Message, Message.length(), 0);
-			}
-		  }
-	  }
-	  else
-	  {
-		// error
-	  }
-	  
+      else
+	{
+	  // error
+	}
+      
     }
     else if(command_string == "UNDO")
     {
       printf("RECIEVED UNDO COMMAND\n");
 	  
 	  std::string Message = "";
-	  std::pair<std::string, std::string> cell = NULL;
+	  std::pair<std::string, std::string> cell = make_pair((std::string)NULL, (std::string)NULL);
+	  
 	  int successful = 0;
- 
-	  // 
+	  const char * var;
 	  for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
 	  {
-		if(it->first->get_name() == command_content_string && it->second.connectionfd == connectionfd)
+		if(it->first->get_name() == command_content_string && it->second->connectionfd == connectionfd)
 		{
 		  cell = it->first->undo();
-		  if(cell.first != NULL && cell.second != NULL)
+		  if(cell.first != (std::string)NULL && cell.second != (std::string)NULL)
 		  {
 			Message = "UPDATE\e" + cell.first + "\e" + cell.second + "\n";
 			successful = 1;
@@ -226,11 +223,13 @@ void * thread_handle_clients(void *arg)
 	  // Sending the UPDATE message to all the clients
 	  if(successful)
 	  {
-		  for(it = server_map.begin(); it != server_map.end(); it++)
+	    var = Message.c_str();
+	    
+	    for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
 		  {
 			if(it->first->get_name() == command_content_string)
 			{
-			  send(it->second.connectionfd, Message, Message.length(), 0);
+			  send(it->second->connectionfd, var , strlen(var), 0);
 			}
 		  }
 	  }
@@ -242,7 +241,7 @@ void * thread_handle_clients(void *arg)
 	  
 	  for(std::multimap<spread_sheet*, Client*>::iterator it = server_map.begin(); it != server_map.end(); it++)
 	  {
-		if(it->first->get_name() == command_content_string && it->second.connectionfd == connectionfd)
+		if(it->first->get_name() == command_content_string && it->second->connectionfd == connectionfd)
 		{
 		  it->first->save();
 		  break;
@@ -252,7 +251,7 @@ void * thread_handle_clients(void *arg)
     else if(command_string == "DISCONNECT")
     {
       printf("RECIEVED DISCONNECT COMMAND\n");
-	  
+
 	  // Disconnect the client with the server
 	  if (-1 == close (connectionfd))
 	  {
@@ -267,6 +266,8 @@ void * thread_handle_clients(void *arg)
   }
   return NULL;
 }
+
+
 
 //AUTH function finds if the password is valid for the server and if itis returns true
 bool authentication(char buf[], int escseq)
